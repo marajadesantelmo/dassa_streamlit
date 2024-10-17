@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import smtplib
 from email.message import EmailMessage
 import time
+from tokens import username, password
 if os.path.exists('//dc01/Usuarios/PowerBI/flastra/Documents/automatizaciones'):
     os.chdir('//dc01/Usuarios/PowerBI/flastra/Documents/automatizaciones')
 else:
@@ -22,8 +23,6 @@ def limpiar_columnas(df):
 
 print('Descargando datos de SQL')
 server = '101.44.8.58\\SQLEXPRESS_X86,1436'
-username = 'dassa'
-password = 'Da$$a3065!'
 conn = pyodbc.connect('DRIVER={SQL Server};SERVER='+server+';UID='+username+';PWD='+ password)
 cursor = conn.cursor()
 fecha = datetime.now().strftime('%Y-%m-%d')
