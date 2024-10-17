@@ -2,15 +2,15 @@ import streamlit as st
 import pandas as pd
 def show_page():
     # Load data
-    arribos = pd.read_csv('arribos/arribos.csv')
+    arribos = pd.read_csv('data/arribos.csv')
     arribos = arribos[['terminal', 'turno', 'contenedor', 'cliente', 'bookings', 'tipo_cnt', 'tiempo_transcurrido', 'Estado']]
     arribos.columns = ['Terminal', 'Turno', 'Contenedor', 'Cliente', 'Bookings', 'Tipo', 'Temp.', 'Estado']
 
-    pendiente_desconsolidar= pd.read_csv('arribos/pendiente_desconsolidar.csv')
+    pendiente_desconsolidar= pd.read_csv('data/pendiente_desconsolidar.csv')
     pendiente_desconsolidar = pendiente_desconsolidar[['contenedor', 'Estado', 'cliente', 'Entrega', 'vto_vacio', 'tipo_cnt', 'peso']]
     pendiente_desconsolidar.columns = ['Contenedor', 'Estado', 'Cliente', 'Entrega', 'Vto. Vacio', 'Tipo', 'Peso']
 
-    turnos= pd.read_csv('turnos.csv')
+    turnos= pd.read_csv('data/turnos.csv')
 
     verificaciones_impo = turnos[(turnos['tipo_oper'] == 'Importacion') & (turnos['destino'] == 'Verificacion')]
     verificaciones_impo = verificaciones_impo[['dia', 'cliente', 'desc_merc', 'contenedor', 'Envase', 'cantidad', 'ubicacion']]

@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 def show_page():
     # Load data
-    arribos_expo = pd.read_csv('arribos/arribos_expo.csv')
+    arribos_expo = pd.read_csv('data/arribos_expo.csv')
     arribos_expo_carga = arribos_expo[arribos_expo['tipo_oper'] != 'VACIO']
     arribos_expo_ctns = arribos_expo[arribos_expo['tipo_oper'] == 'VACIO']
 
@@ -12,7 +12,7 @@ def show_page():
     arribos_expo_ctns = arribos_expo_ctns[['fecha', 'bookings', 'cliente', 'dimension', 'contenedor', 'precinto','Estado']]
     arribos_expo_ctns.columns = ['Fecha', 'Bookings', 'Cliente', 'Dimension', 'Contenedor', 'Precinto', 'Estado']   
 
-    turnos= pd.read_csv('turnos.csv')
+    turnos= pd.read_csv('data/turnos.csv')
 
     verificaciones_expo = turnos[(turnos['tipo_oper'] == 'Exportacion') & (turnos['destino'] == 'Verificacion')]
     verificaciones_impo = verificaciones_impo[['dia', 'cliente', 'desc_merc', 'contenedor', 'Envase', 'cantidad', 'ubicacion']]

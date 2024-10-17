@@ -189,23 +189,5 @@ turnos = pd.concat([turnos, verificaciones, consolidados], ignore_index=True)
 turnos = pd.merge(turnos, ubicaciones, on='id', how='left')
 turnos = limpiar_columnas(turnos)
 
-print('Subiendo datos a google sheets')
-gc = gspread.service_account(filename='credenciales_gsheets.json')
-sheet = gc.open_by_url('https://docs.google.com/spreadsheets/d/1aWYam7vlducK5vNiQO5lyNfWJR6dEe-WA2805URN6p0')
-worksheet_turnos  = sheet.worksheet('Turnos2')
-worksheet_turnos.clear()
-set_with_dataframe(worksheet_turnos, turnos)
 
-turnos.to_csv('turnos.csv', index=False) #Turnos para streamlit
-
-#%%Logeo
-sheet_logs =  gc.open_by_url('https://docs.google.com/spreadsheets/d/1aPUkhige3tq7_HuJezTYA1Ko7BWZ4D4W0sZJtsTyq3A')                                           
-worksheet_logs = sheet_logs.worksheet('Logeos')
-df_logs = worksheet_logs.get_all_values()
-df_logs = pd.DataFrame(df_logs[1:], columns=df_logs[0])
-now = datetime.now().strftime('%Y-%m-%d %H:%M')
-new_log_entry = pd.DataFrame([{'Rutina': 'Turnos', 'Fecha y Hora': now}])
-df_logs = pd.concat([df_logs, new_log_entry], ignore_index=True)
-worksheet_logs.clear()
-set_with_dataframe(worksheet_logs, df_logs)
-print("Se registr� el logeo")   
+turnos.to_csv('data/turnos.csv', index=False) #Turnos para streamlit

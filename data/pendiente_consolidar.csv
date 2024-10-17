@@ -1,0 +1,31 @@
+orden_ing,suborden,renglon,contenedor,fecha_ing,tipo_oper,bookings,cantidad,kilos,volumen,cliente,Dias
+31288,0,1,,2024-10-08,EXPORTACION    ,245350576           ,406,7780.00,77.00,Lift Van Int. Co S.A,9
+31237,0,1,,2024-10-09,EXPORTACION    ,                    ,65,900.00,9.00,Lift Van Int. Co S.A,8
+31372,0,1,,2024-10-14,EXPORTACION    ,                    ,60,860.00,12.00,Lift Van Int. Co S.A,3
+31371,0,1,,2024-10-14,EXPORTACION    ,                    ,139,2600.00,30.00,Lift Van Int. Co S.A,3
+31145,0,1,,2024-10-02,EXPORTACION    ,                    ,99,1700.00,27.00,Lift Van Int. Co S.A,15
+31345,0,2,,2024-10-16,EXPORTACION    ,243602276           ,50,16590.40,0.00,Hilado Sa,1
+31345,0,1,,2024-10-16,EXPORTACION    ,243602276           ,50,16613.00,0.00,Hilado Sa,1
+31345,0,3,,2024-10-16,EXPORTACION    ,243602276           ,50,16278.10,0.00,Hilado Sa,1
+5126,0,1,,2018-03-02,EXPORTACION    ,                    ,1,100.00,0.00,Hra Consultora,2421
+29357,0,1,,2024-06-28,EXPORTACION    ,                    ,1,844.31,1.87,Minera Santa Rita Srl,111
+29259,0,1,,2024-06-24,EXPORTACION    ,EBKG09174946        ,1,0.00,1.87,Minera Santa Rita Srl,115
+29624,0,1,,2024-07-15,EXPORTACION    ,NBOBUE24050057      ,2,715.56,1.67,Piranga Sa,94
+27266,0,1,,2024-01-12,EXPORTACION    ,24001EC01002212Z    ,1,848.26,1.94,Manufactura Los Andes S.A.,279
+27684,0,1,,2024-02-21,EXPORTACION    ,                    ,5,250.58,0.29,Semillas Y Cereales S R L,239
+31370,0,1,,2024-10-17,EXPORTACION    ,                    ,60,25680.00,60.00,Forestal Bosques Del Plata Sa,0
+31370,0,4,,2024-10-17,EXPORTACION    ,                    ,74,24800.00,60.00,Forestal Bosques Del Plata Sa,0
+31370,0,5,,2024-10-17,EXPORTACION    ,                    ,74,24760.00,60.00,Forestal Bosques Del Plata Sa,0
+31370,0,2,,2024-10-17,EXPORTACION    ,                    ,60,25800.00,60.00,Forestal Bosques Del Plata Sa,0
+31370,0,3,,2024-10-17,EXPORTACION    ,                    ,46,25020.00,60.00,Forestal Bosques Del Plata Sa,0
+31222,0,2,,2024-10-09,EXPORTACION    ,                    ,20,22060.00,0.00,Forestal Bosques Del Plata Sa,8
+31222,0,1,,2024-10-09,EXPORTACION    ,                    ,20,22060.00,0.00,Forestal Bosques Del Plata Sa,8
+31361,0,1,,2024-10-17,EXPORTACION    ,62641596            ,10,27805.00,60.00,Arleather S.R.L.,0
+31307,0,1,,2024-10-15,EXPORTACION    ,24001EC01067279R    ,10,24640.00,60.00,Arleather S.R.L.,2
+31361,0,2,,2024-10-17,EXPORTACION    ,62641596            ,10,27805.00,60.00,Arleather S.R.L.,0
+31307,0,2,,2024-10-15,EXPORTACION    ,24001EC01067279R    ,10,24640.00,60.00,Arleather S.R.L.,2
+31346,0,1,,2024-10-16,EXPORTACION    ,                    ,10,24713.00,60.00,Arleather S.R.L.,1
+31346,0,2,,2024-10-16,EXPORTACION    ,                    ,10,24713.00,60.00,Arleather S.R.L.,1
+31346,0,3,,2024-10-16,EXPORTACION    ,                    ,10,24714.00,60.00,Arleather S.R.L.,1
+29188,0,1,,2024-06-14,EXPORTACION    ,                    ,1,1312.78,3.33,Cortez Srl,125
+31219,0,2,,2024-10-08,EXPORTACION    ,                    ,4,2205.00,5.00,Pallets Jauregui Sociedad Anonima,9
