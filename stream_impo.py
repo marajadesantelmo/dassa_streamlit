@@ -2,25 +2,21 @@ import streamlit as st
 import pandas as pd
 import gspread
 from streamlit_gsheets import GSheetsConnection
+import time
 
-def show_page():
-    # Load data
-
-    conn = st.connection('gsheets', type=GSheetsConnection)
+def fetch_data(conn):
     arribos = conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1r66h7BCAu-CyG5uRsITYhuds9uGlw7k_-Xu24WNX43Q/edit?gid=0#gid=0', 
-                    usecols=list(range(18)))
-
+                        usecols=list(range(18)))
     arribos = arribos[['terminal', 'turno', 'contenedor', 'cliente', 'bookings', 'tipo_cnt', 'tiempo_transcurrido', 'Estado']]
     arribos.columns = ['Terminal', 'Turno', 'Contenedor', 'Cliente', 'Bookings', 'Tipo', 'Temp.', 'Estado']
 
     pendiente_desconsolidar = conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1r66h7BCAu-CyG5uRsITYhuds9uGlw7k_-Xu24WNX43Q/edit?gid=594764855#gid=594764855', 
                                         usecols=list(range(17)))
-
     pendiente_desconsolidar = pendiente_desconsolidar[['contenedor', 'Estado', 'cliente', 'Entrega', 'vto_vacio', 'tipo_cnt', 'peso']]
     pendiente_desconsolidar.columns = ['Contenedor', 'Estado', 'Cliente', 'Entrega', 'Vto. Vacio', 'Tipo', 'Peso']
 
-    turnos= conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1aWYam7vlducK5vNiQO5lyNfWJR6dEe-WA2805URN6p0/edit?gid=1749130661#gid=1749130661', 
-                      usecols=list(range(29)))
+    turnos = conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1aWYam7vlducK5vNiQO5lyNfWJR6dEe-WA2805URN6p0/edit?gid=1749130661#gid=1749130661', 
+                       usecols=list(range(29)))
 
     verificaciones_impo = turnos[(turnos['tipo_oper'] == 'Importacion') & (turnos['destino'] == 'Verificacion')]
     verificaciones_impo = verificaciones_impo[['dia', 'cliente', 'desc_merc', 'contenedor', 'Envase', 'cantidad', 'ubicacion']]
@@ -34,8 +30,12 @@ def show_page():
     otros_impo = otros_impo[['dia', 'hora', 'id', 'cliente', 'contenedor', 'Envase', 'cantidad', 'ubicacion']]
     otros_impo.columns = ['Dia', 'Hora', 'Operacion', 'Cliente', 'Contenedor', 'Envase', 'Cantidad', 'Ubic.']
 
-    remisiones = turnos[turnos['destino'] == 'Remision']
-    consolidados = turnos[turnos['destino'] == 'Consolidado']
+    return arribos, pendiente_desconsolidar, verificaciones_impo, retiros, otros_impo
+
+def show_page():
+    # Load data
+    conn = st.connection('gsheets', type=GSheetsConnection)
+    arribos, pendiente_desconsolidar, verificaciones_impo, retiros, otros_impo = fetch_data(conn)
 
     col_logo, col_title = st.columns([2, 5])
     with col_logo:
@@ -87,3 +87,11 @@ def show_page():
     with col4:
         st.header("Retiros")
         st.dataframe(retiros, hide_index=True)
+
+    # Refresh data every 5 minutes
+    time.sleep(60) 
+    st.experimental_rerun()
+
+# Run the show_page function
+if __name__ == "__main__":
+    show_page()
