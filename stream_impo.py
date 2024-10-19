@@ -90,7 +90,7 @@ def show_page():
 
     # Refresh data every 5 minutes
     time.sleep(60) 
-    st.experimental_rerun()
+    st.experimental_rerun
 
 # Run the show_page function
 if __name__ == "__main__":
