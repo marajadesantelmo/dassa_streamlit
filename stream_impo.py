@@ -1,17 +1,26 @@
 import streamlit as st
 import pandas as pd
+import gspread
+from streamlit_gsheets import GSheetsConnection
 
 def show_page():
     # Load data
-    arribos = pd.read_csv('data/arribos.csv')
+
+    conn = st.connection('gsheets', type=GSheetsConnection)
+    arribos = conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1r66h7BCAu-CyG5uRsITYhuds9uGlw7k_-Xu24WNX43Q/edit?gid=0#gid=0', 
+                    usecols=list(range(18)))
+
     arribos = arribos[['terminal', 'turno', 'contenedor', 'cliente', 'bookings', 'tipo_cnt', 'tiempo_transcurrido', 'Estado']]
     arribos.columns = ['Terminal', 'Turno', 'Contenedor', 'Cliente', 'Bookings', 'Tipo', 'Temp.', 'Estado']
 
-    pendiente_desconsolidar= pd.read_csv('data/pendiente_desconsolidar.csv')
+    pendiente_desconsolidar = conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1r66h7BCAu-CyG5uRsITYhuds9uGlw7k_-Xu24WNX43Q/edit?gid=594764855#gid=594764855', 
+                                        usecols=list(range(17)))
+
     pendiente_desconsolidar = pendiente_desconsolidar[['contenedor', 'Estado', 'cliente', 'Entrega', 'vto_vacio', 'tipo_cnt', 'peso']]
     pendiente_desconsolidar.columns = ['Contenedor', 'Estado', 'Cliente', 'Entrega', 'Vto. Vacio', 'Tipo', 'Peso']
 
-    turnos= pd.read_csv('data/turnos.csv')
+    turnos= conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1aWYam7vlducK5vNiQO5lyNfWJR6dEe-WA2805URN6p0/edit?gid=1749130661#gid=1749130661', 
+                      usecols=list(range(29)))
 
     verificaciones_impo = turnos[(turnos['tipo_oper'] == 'Importacion') & (turnos['destino'] == 'Verificacion')]
     verificaciones_impo = verificaciones_impo[['dia', 'cliente', 'desc_merc', 'contenedor', 'Envase', 'cantidad', 'ubicacion']]
