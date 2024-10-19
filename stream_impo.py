@@ -47,7 +47,7 @@ def show_page():
         if "Arribado" in row['Estado']:
             return ['background-color: darkgreen; color: black' for _ in row]
         elif row['Estado'] == "Pendiente ingreso":
-            return ['background-color: lightyellow; color: black' for _ in row]
+            return ['background-color: darkgoldenrod; color: black' for _ in row]
         else:
             return ['' for _ in row]
 
