@@ -8,10 +8,21 @@ import smtplib
 from email.message import EmailMessage
 import time
 from tokens import username, password
-if os.path.exists('//dc01/Usuarios/PowerBI/flastra/Documents/automatizaciones'):
-    os.chdir('//dc01/Usuarios/PowerBI/flastra/Documents/automatizaciones')
+if os.path.exists('//dc01/Usuarios/PowerBI/flastra/Documents/dassa_streamlit'):
+    os.chdir('//dc01/Usuarios/PowerBI/flastra/Documents/dassa_streamlit')
+elif os.path.exists('C:/Users/facun/OneDrive/Documentos/GitHub/dassa_streamlit'):
+    os.chdir('C:/Users/facun/OneDrive/Documentos/GitHub/dassa_streamlit')
 else:
     print("Se usa working directory por defecto")
+
+def limpiar_columnas(df):
+    columns = ['cliente', 'tipo_oper', 'desc_merc', 'Envase']
+    for column in columns:
+        if column in df.columns:
+            df[column] = df[column].str.strip()
+            df[column] = df[column].str.title()
+    return df
+
 # CONEXION SQL
 def limpiar_columnas(df):
     columns = ['cliente', 'tipo_oper', 'desc_merc', 'Envase']
@@ -160,6 +171,7 @@ turnos_egr = pd.merge(turnos, egresado, on='id', how='inner')
 turnos_egr['Estado'] = 'En curso'
 turnos_exist = pd.merge(turnos, existente, on='id', how='inner')
 turnos_exist['Estado'] = 'Pendiente'
+turnos_exist = turnos_exist[~turnos_exist['id'].isin(turnos_egr['id'])] #Se sacan casos de retiros parciales
 turnos = pd.concat([turnos_egr, turnos_exist], ignore_index=True)
 turnos = pd.merge(turnos, salidas, on='id', how='left')
 turnos = pd.merge(turnos, salidas_vacios, on='id', how='left')

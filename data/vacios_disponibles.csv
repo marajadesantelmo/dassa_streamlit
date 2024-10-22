@@ -1,13 +1,13 @@
 orden_ing,contenedor,conocim,cliente,bookings,tipo_cnt,dimension,fecha_ing
-25532,CAIU-870213-4,NACIONAL                      ,A La Orden                                                                      ,NACIONAL            ,  ,40,2023-08-25
 25770,DFSU-608421-3,NACIONAL                      ,A La Orden                                                                      ,NACIONAL            ,  ,40,2023-09-11
+25532,CAIU-870213-4,NACIONAL                      ,A La Orden                                                                      ,NACIONAL            ,  ,40,2023-08-25
+31302,FFAU-535452-4,244571578                     ,Arleather S.R.L.                                                                ,244571578           ,HC,40,2024-10-15
+31329,TLLU-582460-0,244571303                     ,Arleather S.R.L.                                                                ,244571303           ,HC,40,2024-10-15
 31303,CAAU-716447-4,244571578                     ,Arleather S.R.L.                                                                ,244571578           ,HC,40,2024-10-15
+31368,MRSU-599179-0,244534245                     ,Arleather S.R.L.                                                                ,244534245           ,HC,40,2024-10-17
 31330,MRKU-578701-6,244571303                     ,Arleather S.R.L.                                                                ,244571303           ,HC,40,2024-10-15
 31331,MSKU-925133-7,244571303                     ,Arleather S.R.L.                                                                ,244571303           ,HC,40,2024-10-15
-31329,TLLU-582460-0,244571303                     ,Arleather S.R.L.                                                                ,244571303           ,HC,40,2024-10-15
-31302,FFAU-535452-4,244571578                     ,Arleather S.R.L.                                                                ,244571578           ,HC,40,2024-10-15
-31368,MRSU-599179-0,244534245                     ,Arleather S.R.L.                                                                ,244534245           ,HC,40,2024-10-17
 31369,SUDU-673999-6,244534245                     ,Arleather S.R.L.                                                                ,244534245           ,HC,40,2024-10-17
+30180,ZIMU-302927-0,ZIMUBUE9033838                ,Jsos S.R.L                                                                      ,ZIMUBUE9033838      ,DR,20,2024-08-07
 30182,TCLU-574212-4,ZIMUBUE9033838                ,Jsos S.R.L                                                                      ,ZIMUBUE9033838      ,DR,20,2024-08-07
 30181,BMOU-211273-7,ZIMUBUE9033838                ,Jsos S.R.L                                                                      ,ZIMUBUE9033838      ,DR,20,2024-08-07
-30180,ZIMU-302927-0,ZIMUBUE9033838                ,Jsos S.R.L                                                                      ,ZIMUBUE9033838      ,DR,20,2024-08-07

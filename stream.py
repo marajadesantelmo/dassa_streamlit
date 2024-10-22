@@ -4,7 +4,10 @@ import stream_expo
 import stream_impo_historico
 import stream_expo_historico
 
-st.set_page_config(page_title="DASSA Operations", page_icon="📊", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Operativa DASSA", 
+                   page_icon="📊", 
+                   layout="wide", 
+                   initial_sidebar_state="expanded")
 
 # Sidebar Navigation
 st.sidebar.title("Menú de Navegación")
@@ -42,10 +45,10 @@ st.markdown(
         .dataframe td {
             background-color: #D3D3D3;  /* Gray background for table cells */
             color: black;  /* Black text for table cells */
-            font-size: 10px;
+            font-size: 6px;  /* Smaller font size */
         }
         .dataframe td, .dataframe th {
-            padding: 0.3rem;
+            padding: 0.1rem;  /* Thinner padding */
             text-align: left;
             word-wrap: break-word;
             white-space: nowrap;
@@ -56,7 +59,8 @@ st.markdown(
         .css-1d391kg {  /* Sidebar */
             background-color: #073642;
             color: #839496;
-            font-size: 9px;
+            font-size: 8px;  /* Smaller font size */
+            width: 20px;  /* Adjust the width to make the sidebar smaller */
         }
         
         /* Streamlit buttons and input fields */

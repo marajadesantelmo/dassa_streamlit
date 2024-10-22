@@ -13,11 +13,14 @@ import smtplib
 from email.message import EmailMessage
 import time
 from tokens import username, password
-if os.path.exists('//dc01/Usuarios/PowerBI/flastra/Documents/automatizaciones'):
-    os.chdir('//dc01/Usuarios/PowerBI/flastra/Documents/automatizaciones')
+if os.path.exists('//dc01/Usuarios/PowerBI/flastra/Documents/dassa_streamlit'):
+    os.chdir('//dc01/Usuarios/PowerBI/flastra/Documents/dassa_streamlit')
+elif os.path.exists('C:/Users/facun/OneDrive/Documentos/GitHub/dassa_streamlit'):
+    os.chdir('C:/Users/facun/OneDrive/Documentos/GitHub/dassa_streamlit')
 else:
     print("Se usa working directory por defecto")
 # CONEXION SQL
+print('Actualizando información operativa Orden del Día DASSA')
 print('Descargando datos de SQL')
 server = '101.44.8.58\\SQLEXPRESS_X86,1436'
 conn = pyodbc.connect('DRIVER={SQL Server};SERVER='+server+';UID='+username+';PWD='+ password)

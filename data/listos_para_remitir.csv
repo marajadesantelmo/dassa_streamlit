@@ -1,20 +1,8 @@
 orden_ing,contenedor,conocim,cliente,bookings,tipo_cnt,dimension,fecha_ing,Dias
-31373,MRKU-030629-4,245235638                     ,Mercovan Argentina Srl                                                          ,245235638           ,DR,40,2024-10-17,2
-31254,TCKU-120389-4,244879204                     ,Lift Van Int. Co S.A                                                            ,244879204           ,DR,20,2024-10-10,9
-31365,CMAU-477470-9,BUA0329504                    ,Pelama Chubut S.A.                                                              ,BUA0329504          ,DR,40,2024-10-16,3
-29632,FSCU-800502-9,EBKG09469662                  ,Cortez Srl                                                                      ,EBKG09469662        ,HC,40,2024-07-10,101
-31366,ONEU-125801-7,BUEE13414500                  ,Tipoiti Satic                                                                   ,BUEE13414500        ,HC,40,2024-10-17,2
-31367,TCNU-508761-0,BUEE13414500                  ,Tipoiti Satic                                                                   ,BUEE13414500        ,HC,40,2024-10-17,2
-31271,FFAU-175574-5,64974599                      ,Maringa Maderas Sa                                                              ,64974599            ,HC,40,2024-10-14,5
-31318,FCIU-871797-6,EBKG10440808                  ,Piranga Sa                                                                      ,EBKG10440808        ,HC,40,2024-10-16,3
-31336,CAIU-781609-2,EBKG10440523                  ,Piranga Sa                                                                      ,EBKG10440523        ,HC,40,2024-10-16,3
-31338,CAAU-691173-9,EBKG10440523                  ,Piranga Sa                                                                      ,EBKG10440523        ,HC,40,2024-10-16,3
-31339,MSMU-779255-0,EBKG10440523                  ,Piranga Sa                                                                      ,EBKG10440523        ,HC,40,2024-10-16,3
-31319,TGHU-615406-3,EBKG10440808                  ,Piranga Sa                                                                      ,EBKG10440808        ,HC,40,2024-10-16,3
-31337,MSDU-582085-1,EBKG10440523                  ,Piranga Sa                                                                      ,EBKG10440523        ,HC,40,2024-10-16,3
-31321,CAIU-862565-5,EBKG10440808                  ,Piranga Sa                                                                      ,EBKG10440808        ,HC,40,2024-10-16,3
-31320,BMOU-619818-0,EBKG10440808                  ,Piranga Sa                                                                      ,EBKG10440808        ,HC,40,2024-10-16,3
-31291,HLBU-168366-8,68641669                      ,Carpal Sa                                                                       ,68641669            ,HC,40,2024-10-10,9
-31293,UACU-536890-2,67307670                      ,Lodeco Artli S. R. L.                                                           ,67307670            ,HC,40,2024-10-14,5
-31292,CAIU-853356-4,63975008                      ,Pallets Jauregui Sociedad Anonima                                               ,63975008            ,HC,40,2024-10-10,9
-30411,MAGU-241502-1,ZIMUBUE9033839                ,Jsos S.R.L                                                                      ,ZIMUBUE9033839      ,DR,20,2024-08-23,57
+31373,MRKU-030629-4,245235638                     ,Mercovan Argentina Srl                                                          ,245235638           ,DR,40,2024-10-17,5
+29632,FSCU-800502-9,EBKG09469662                  ,Cortez Srl                                                                      ,EBKG09469662        ,HC,40,2024-07-10,104
+31271,FFAU-175574-5,64974599                      ,Maringa Maderas Sa                                                              ,64974599            ,HC,40,2024-10-14,8
+31291,HLBU-168366-8,68641669                      ,Carpal Sa                                                                       ,68641669            ,HC,40,2024-10-10,12
+31293,UACU-536890-2,67307670                      ,Lodeco Artli S. R. L.                                                           ,67307670            ,HC,40,2024-10-14,8
+31292,CAIU-853356-4,63975008                      ,Pallets Jauregui Sociedad Anonima                                               ,63975008            ,HC,40,2024-10-10,12
+30411,MAGU-241502-1,ZIMUBUE9033839                ,Jsos S.R.L                                                                      ,ZIMUBUE9033839      ,DR,20,2024-08-23,60
