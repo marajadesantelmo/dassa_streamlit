@@ -6,11 +6,8 @@ Script que actualiza los googlesheets para tablero Orden del dia
 import pyodbc
 import pandas as pd
 import os
-import gspread
 from gspread_dataframe import set_with_dataframe
 from datetime import datetime, timedelta
-import smtplib
-from email.message import EmailMessage
 import time
 from tokens import username, password
 if os.path.exists('//dc01/Usuarios/PowerBI/flastra/Documents/dassa_streamlit'):
@@ -31,8 +28,6 @@ fecha_ant = datetime.now() - timedelta(days=120)
 fecha_ant = fecha_ant.strftime('%Y-%m-%d')
 fecha_ant_ult3dias = datetime.now() - timedelta(days=3)
 fecha_ant_ult3dias = fecha_ant_ult3dias.strftime('%Y-%m-%d')
-
-#%% Arribos
 
 #Descargo contenedores IMPO a arribar
 cursor.execute(f"""
@@ -199,7 +194,6 @@ tally = tally.tail(100)
 
 conn.close()
 
-#%% Formateo y procesamiento de datos Arribos
 print('Procesando datos')
 
 def transformar(df):

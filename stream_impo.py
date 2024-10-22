@@ -4,16 +4,13 @@ import pandas as pd
 #from streamlit_gsheets import GSheetsConnection
 import time
 from datetime import datetime
-from utils import highlight, rellenar_df_vacio
-def fetch_data():
-    # Opcion para tomarlo de googlsheets
-    #arribos = conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1r66h7BCAu-CyG5uRsITYhuds9uGlw7k_-Xu24WNX43Q/edit?gid=0#gid=0', usecols=list(range(18)), ttl=1)
-    #pendiente_desconsolidar = conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1r66h7BCAu-CyG5uRsITYhuds9uGlw7k_-Xu24WNX43Q/edit?gid=594764855#gid=594764855', usecols=list(range(17)), ttl=1)
-    #turnos = conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1aWYam7vlducK5vNiQO5lyNfWJR6dEe-WA2805URN6p0/edit?gid=1749130661#gid=1749130661', usecols=list(range(29)), ttl=1)
-    arribos = pd.read_csv('data/arribos.csv')
-    pendiente_desconsolidar = pd.read_csv('data/pendiente_desconsolidar.csv')
-    turnos = pd.read_csv('data/turnos.csv')
+from tokens import username, password
+from utils import highlight, rellenar_df_vacio, turnos_update, arribos_impo_update
 
+def fetch_data():
+    turnos = turnos_update(username, password)
+    arribos, pendiente_desconsolidar, existente_plz, existente_alm = arribos_impo_update(username, password)
+    # Formateo
     arribos = arribos[['terminal', 'turno', 'contenedor', 'cliente', 'bookings', 'tipo_cnt', 'tiempo_transcurrido', 'Estado']]
     arribos.columns = ['Terminal', 'Turno', 'Contenedor', 'Cliente', 'Bookings', 'Tipo', 'Temp.', 'Estado']
     arribos['Cliente'] = arribos['Cliente'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)

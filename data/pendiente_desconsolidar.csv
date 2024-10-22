@@ -1,4 +1,8 @@
 contenedor,buque,terminal,fecha,turno,peso,operacion,arribado,dimension,tipo_cnt,vto_vacio,Entrega,Estado,cliente,cantidad,kilos,Envase
 TRHU-651223-5,MSC CHANNE                    ,Exolgan,2024-10-17,1500 ,24220.00,TD,1,70,HC,2024-11-02,Medlog Sarandi                ,Pte. Desc.,Aceptyourdestiny Sa                                                             ,,,
 MRKU-060858-7,MAERSK MONTE ALEGRE           ,Terminal 4,2024-10-21,0900 ,4396.00,TD,1,60,DR,2024-11-08,,Vacio,Prowood S.A.                                                                    ,33,4396.00,Pallets                                 
+HLBU-296185-0,JAZAN                         ,Exolgan,2024-10-21,1300 ,1420.00,TD,1,30,DR,2024-11-08,,Pte. Desc.,Lift Van Int. Co S.A                                                            ,75,1420.00,Bultos                                  
+HLBU-114649-0,JAZAN                         ,Exolgan,2024-10-21,1300 ,4265.00,TD,1,60,DR,2024-11-08,,Pte. Desc.,Lift Van Int. Co S.A                                                            ,,,
+FCIU-649748-7,JAZAN                         ,Exolgan,2024-10-21,1300 ,1647.00,TD,1,30,DR,2024-11-08,,Pte. Desc.,Mercovan Argentina Srl                                                          ,47,1647.00,Bultos                                  
+KKTU-786674-6,JAZAN                         ,Exolgan,2024-10-21,1500 ,1560.00,TD,1,30,DR,2024-11-08,,Pte. Desc.,Lift Van Int. Co S.A                                                            ,,,
 MSMU-272409-0,CARTAGENA EXPRESS             ,Exolgan,2024-10-17,2100 ,1260.00,TD,1,30,DR,2024-11-06,,Vacio,Lift Van Int. Co S.A                                                            ,89,1260.00,Bultos                                  
