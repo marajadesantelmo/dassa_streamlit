@@ -19,7 +19,211 @@ def rellenar_df_vacio(df):
         df = pd.DataFrame([['-'] * len(df.columns)], columns=df.columns)
     return df
 
-def impo_update(username, password):
+def turnos_update(username, password):
+    import pyodbc
+    import pandas as pd
+    import os
+    import gspread
+    from gspread_dataframe import set_with_dataframe
+    from datetime import datetime, timedelta
+    import smtplib
+    from email.message import EmailMessage
+    import time
+    if os.path.exists('//dc01/Usuarios/PowerBI/flastra/Documents/dassa_streamlit'):
+        os.chdir('//dc01/Usuarios/PowerBI/flastra/Documents/dassa_streamlit')
+    elif os.path.exists('C:/Users/facun/OneDrive/Documentos/GitHub/dassa_streamlit'):
+        os.chdir('C:/Users/facun/OneDrive/Documentos/GitHub/dassa_streamlit')
+    else:
+        print("Se usa working directory por defecto")
+
+    def limpiar_columnas(df):
+        columns = ['cliente', 'tipo_oper', 'desc_merc', 'Envase']
+        for column in columns:
+            if column in df.columns:
+                df[column] = df[column].str.strip()
+                df[column] = df[column].str.title()
+        return df
+
+    # CONEXION SQL
+    def limpiar_columnas(df):
+        columns = ['cliente', 'tipo_oper', 'desc_merc', 'Envase']
+        for column in columns:
+            if column in df.columns:
+                df[column] = df[column].str.strip()
+                df[column] = df[column].str.title()
+        return df
+
+    print('Descargando datos de SQL')
+    server = '101.44.8.58\\SQLEXPRESS_X86,1436'
+    conn = pyodbc.connect('DRIVER={SQL Server};SERVER='+server+';UID='+username+';PWD='+ password)
+    cursor = conn.cursor()
+    fecha = datetime.now().strftime('%Y-%m-%d')
+    fecha_ant = datetime.now() - timedelta(days=120)
+    fecha_ant = fecha_ant.strftime('%Y-%m-%d')
+    fecha_ant_ult3dias = datetime.now() - timedelta(days=3)
+    fecha_ant_ult3dias = fecha_ant_ult3dias.strftime('%Y-%m-%d')
+    #Existente
+    cursor.execute("""
+        SELECT e.orden_ing, e.suborden, e.renglon, e.cliente, e.tipo_oper, e.fecha_ing, 
+        e.contenedor, e.conocim1, e.desc_merc, e.dimension, e.tipo_cnt, e.volumen, env.detalle AS Envase, 
+        e.cantidad, e.conocim2, e.kilos, e.bookings, e.precinto
+        FROM [DEPOFIS].[DASSA].[Existente en Stock] e
+        JOIN DEPOFIS.DASSA.[Tip_env] env ON e.tipo_env = env.codigo
+    """)  
+    rows = cursor.fetchall()
+    columns = [column[0] for column in cursor.description]
+    existente = pd.DataFrame.from_records(rows, columns=columns)
+    #Descargo Ubicaciones
+    #Ubicaciones del exisntente
+    cursor.execute("""
+        SELECT orden_ing, suborden, renglon, ubicacion
+        FROM [DEPOFIS].[DASSA].[Ubic_St]
+    """)  
+    rows = cursor.fetchall()
+    columns = [column[0] for column in cursor.description]
+    ubicaciones_existente = pd.DataFrame.from_records(rows, columns=columns)
+    #Ubicaciones del egresado
+    cursor.execute(f"""
+    SELECT  orden_ing, suborden, renglon, ubicacion
+    FROM [DEPOFIS].[DASSA].[Egresadas del stock]
+    WHERE fecha_egr > '{fecha_ant}'
+    """) 
+    rows = cursor.fetchall()
+    columns = [column[0] for column in cursor.description]
+    ubicaciones_egresado = pd.DataFrame.from_records(rows, columns=columns)
+    ubicaciones = pd.concat([ubicaciones_existente, ubicaciones_egresado], ignore_index=True)
+
+    #Egresado
+    cursor.execute(f"""
+    SELECT  e.orden_ing, e.suborden, e.renglon, e.cliente, e.tipo_oper, e.fecha_ing, 
+    e.contenedor, e.desc_merc, e.conocim AS conocim1, e.dimension, e.tipo_cnt, e.volumen, env.detalle AS Envase, e.fecha_egr, e.cantidad, e.bookings
+    FROM [DEPOFIS].[DASSA].[Egresadas del stock] e
+    JOIN DEPOFIS.DASSA.[Tip_env] env ON e.tipo_env = env.codigo
+    WHERE e.fecha_egr > '{fecha_ant}'
+    """) 
+    rows = cursor.fetchall()
+    columns = [column[0] for column in cursor.description]
+    egresado = pd.DataFrame.from_records(rows, columns=columns)
+    egresado['cantidad'] *= -1
+    egresado['volumen'] *= -1
+    #Verificaciones realizadas
+    cursor.execute(f"""
+        SELECT orden_ing, suborden, renglon, fechaverif            
+        FROM [DEPOFIS].[DASSA].[Todo] 
+        WHERE fechaverif > '{fecha_ant}'
+    """)  
+    rows = cursor.fetchall()
+    columns = [column[0] for column in cursor.description]
+    verificaciones_realizadas = pd.DataFrame.from_records(rows, columns=columns)
+    #Salidas validadas
+    cursor.execute(f"""
+        SELECT orden_ing, suborden, renglon, validada          
+        FROM [DEPOFIS].[DASSA].[Salidas] 
+        WHERE validada > '{fecha_ant}'
+    """)  
+    rows = cursor.fetchall()
+    columns = [column[0] for column in cursor.description]
+    salidas = pd.DataFrame.from_records(rows, columns=columns)
+    #Salidas vacios validadas
+    cursor.execute(f"""
+        SELECT orden_ing, suborden, renglon, validada          
+        FROM [DEPOFIS].[DASSA].[Vacios] 
+        WHERE validada > '{fecha_ant}'
+    """)  
+    rows = cursor.fetchall()
+    columns = [column[0] for column in cursor.description]
+    salidas_vacios = pd.DataFrame.from_records(rows, columns=columns)
+    #Turnos
+    cursor.execute(f"""
+    SELECT orden_ing, suborden, renglon, destino, dia, hora, observa, conocim2
+    FROM DEPOFIS.DASSA.[TURNOSSA] as e
+    WHERE dia >= '{fecha}'
+    """) 
+    rows = cursor.fetchall()
+    columns = [column[0] for column in cursor.description]
+    turnos = pd.DataFrame.from_records(rows, columns=columns)
+    turnos['destino'] = turnos['destino'].str.strip()
+    turnos['Estado'] = 'Pendiente'
+    turnos['observa'] = turnos['observa'].str.strip()
+    turnos = turnos[turnos['orden_ing'] != 0]
+    #Genero ids para hacer matcheos
+    def generate_id(df):
+        df['id'] = df[['orden_ing', 'suborden', 'renglon']].astype(str).agg('-'.join, axis=1)
+        df.drop(columns=['orden_ing', 'suborden', 'renglon'], inplace=True)
+        return df
+
+    turnos['id'] = turnos[['orden_ing', 'suborden', 'renglon']].astype(str).agg('-'.join, axis=1)
+    existente['id'] = existente[['orden_ing', 'suborden', 'renglon']].astype(str).agg('-'.join, axis=1)
+    egresado = generate_id(egresado)
+    verificaciones_realizadas = generate_id(verificaciones_realizadas)
+    salidas = generate_id(salidas)
+    salidas.columns = ['salida_validada', 'id']
+    salidas_vacios = generate_id(salidas_vacios)
+    salidas_vacios.columns = ['salida_vacio_validada', 'id']
+    ubicaciones = generate_id(ubicaciones)
+
+    turnos = limpiar_columnas(turnos)
+    existente = limpiar_columnas(existente)
+    #Separo segun tipo de turnos
+    verificaciones = turnos[turnos['destino'].str.contains('Verificacion', case=False, na=False)]
+    consolidados = turnos[turnos['destino'].str.contains('Consolidado', case=False, na=False)]
+    turnos = turnos[turnos['destino'].str.contains('Retiro|Remi', case=False, na=False)]
+
+    # Consolidados
+    existente_a_consolidar = pd.merge(consolidados, existente.drop(columns=['id', 'suborden', 'renglon', 'conocim2']), on='orden_ing', how='inner')
+    contenedores_a_consolidar = existente_a_consolidar[existente_a_consolidar['Envase'] == 'Contenedor']
+    mercaderia_a_consolidar = existente_a_consolidar[existente_a_consolidar['Envase'] != 'Contenedor']
+    mercaderia_a_consolidar = mercaderia_a_consolidar.groupby('orden_ing').agg({
+        'volumen': 'sum',
+        'cantidad': 'sum',
+        'kilos': 'sum'}).reset_index()
+
+    # Join de contenedores y mercaderia
+    contenedores_a_consolidar.drop(columns=['volumen', 'cantidad', 'kilos'], inplace=True)
+
+    consolidados = pd.merge(contenedores_a_consolidar, mercaderia_a_consolidar, on='orden_ing', how='left')
+
+
+    # Quito conocimiento del existente
+    existente.drop(columns=['conocim2', 'orden_ing', 'suborden', 'renglon'], inplace=True)
+
+    # Retiros y remisiones (lo trato a parte porque tengo que hacer match con salidas)
+    turnos_egr = pd.merge(turnos, egresado, on='id', how='inner')
+    turnos_egr['Estado'] = 'En curso'
+    turnos_exist = pd.merge(turnos, existente, on='id', how='inner')
+    turnos_exist['Estado'] = 'Pendiente'
+    turnos_exist = turnos_exist[~turnos_exist['id'].isin(turnos_egr['id'])] #Se sacan casos de retiros parciales
+    turnos = pd.concat([turnos_egr, turnos_exist], ignore_index=True)
+    turnos = pd.merge(turnos, salidas, on='id', how='left')
+    turnos = pd.merge(turnos, salidas_vacios, on='id', how='left')
+    turnos['fecha_salida_validada'] = pd.to_datetime(turnos['salida_validada'], errors='coerce').dt.date
+    turnos['salida_validada'] = turnos.apply(
+        lambda row: float('nan') if pd.notna(row['fecha_salida_validada']) and row['fecha_salida_validada'] < datetime.now().date() else row['salida_validada'],
+        axis=1)
+    turnos.drop(columns=['fecha_salida_validada'], inplace=True)
+    turnos['Estado'] = turnos.apply(
+        lambda row: row['salida_validada'][11:16] + ' Realizado' if pd.notna(row['salida_validada']) else row['Estado'],
+        axis=1)
+
+    # Verificaciones
+    verificaciones= pd.merge(verificaciones, verificaciones_realizadas, on='id', how='left')
+    verificaciones['Estado'] = verificaciones['fechaverif'].apply(lambda x: 'Realizado' if pd.notna(x) else 'Pendiente')
+    verificaciones_existente = pd.merge(verificaciones, existente, on='id', how='inner')
+    verificaciones_egresado = pd.merge(verificaciones, egresado, on='id', how='inner')
+    # Verificaciones sin dato
+    verificaciones_sin_dato = verificaciones[
+        ~verificaciones['id'].isin(verificaciones_existente['id']) &
+        ~verificaciones['id'].isin(verificaciones_egresado['id'])
+    ]
+    verificaciones = pd.concat([verificaciones_existente, verificaciones_egresado, verificaciones_sin_dato], ignore_index=True)
+    #Junto verificaciones con resto de turnos
+    turnos = pd.concat([turnos, verificaciones, consolidados], ignore_index=True)
+    #Join de ubicaciones
+    turnos = pd.merge(turnos, ubicaciones, on='id', how='left')
+    turnos = limpiar_columnas(turnos)
+    return turnos
+
+def arribos_impo_update(username, password):
     import pyodbc
     import pandas as pd
     import os
@@ -42,14 +246,6 @@ def impo_update(username, password):
     fecha_ant = fecha_ant.strftime('%Y-%m-%d')
     fecha_ant_ult3dias = datetime.now() - timedelta(days=3)
     fecha_ant_ult3dias = fecha_ant_ult3dias.strftime('%Y-%m-%d')
-    def limpiar_columnas(df):
-        columns = ['cliente', 'tipo_oper', 'desc_merc', 'Envase']
-        for column in columns:
-            if column in df.columns:
-                df[column] = df[column].str.strip()
-                df[column] = df[column].str.title()
-        return df
-
     #Contenedores IMPO a arribar
     cursor.execute(f"""
         SELECT c.contenedor, c.buque, c.terminal, c.fecha, c.turno, c.peso, c.operacion, 
@@ -96,7 +292,7 @@ def impo_update(username, password):
     """)
     rows = cursor.fetchall()
     columns = [column[0] for column in cursor.description]
-    contenedores_existente = pd.DataFrame.from_records(rows, columns=columns)
+    contenedores_existente_impo = pd.DataFrame.from_records(rows, columns=columns)
     #Contenedores IMPO a arribar y a desconsolidar en los ultimos dias
     cursor.execute(f"""
         SELECT 
@@ -113,17 +309,14 @@ def impo_update(username, password):
     arribados_a_desconsolidar = pd.DataFrame.from_records(rows, columns=columns)
     #Descargo Existente IMPO
     cursor.execute("""
-        SELECT e.orden_ing, e.suborden, e.renglon, e.cliente, e.tipo_oper, e.fecha_ing, 
-        e.contenedor, e.conocim1, e.desc_merc, e.dimension, e.tipo_cnt, e.volumen, env.detalle AS Envase, 
-        e.cantidad, e.conocim2, e.kilos, e.bookings, e.precinto
-        FROM [DEPOFIS].[DASSA].[Existente en Stock] e
-        JOIN DEPOFIS.DASSA.[Tip_env] env ON e.tipo_env = env.codigo
-        WHERE e.tipo_oper = 'IMPORTACION' 
+        SELECT orden_ing, suborden, renglon, cliente, agencia, fecha_ing, contenedor, conocim1, desc_merc, dimension, tipo_cnt, volumen, kilos
+        FROM [DEPOFIS].[DASSA].[Existente en Stock]
+        WHERE tipo_oper = 'IMPORTACION' 
     """)  
     rows = cursor.fetchall()
     columns = [column[0] for column in cursor.description]
-    existente = pd.DataFrame.from_records(rows, columns=columns)
-    #Ubicaciones
+    existente_impo = pd.DataFrame.from_records(rows, columns=columns)
+    #Descargo Ubicaciones IMPO
     cursor.execute("""
         SELECT orden_ing, suborden, renglon, ubicacion
         FROM [DEPOFIS].[DASSA].[Ubic_St]
@@ -131,16 +324,6 @@ def impo_update(username, password):
     rows = cursor.fetchall()
     columns = [column[0] for column in cursor.description]
     ubicaciones_existente = pd.DataFrame.from_records(rows, columns=columns)
-    #Ubicaciones del egresado
-    cursor.execute(f"""
-    SELECT  orden_ing, suborden, renglon, ubicacion
-    FROM [DEPOFIS].[DASSA].[Egresadas del stock]
-    WHERE fecha_egr > '{fecha_ant}'
-    """) 
-    rows = cursor.fetchall()
-    columns = [column[0] for column in cursor.description]
-    ubicaciones_egresado = pd.DataFrame.from_records(rows, columns=columns)
-    ubicaciones = pd.concat([ubicaciones_existente, ubicaciones_egresado], ignore_index=True)
     #Egresado 
     cursor.execute(f"""
     SELECT  e.orden_ing, e.suborden, e.renglon, e.cliente, e.tipo_oper, e.fecha_ing, 
@@ -163,37 +346,7 @@ def impo_update(username, password):
     columns = [column[0] for column in cursor.description]
     tally = pd.DataFrame.from_records(rows, columns=columns)
     tally = tally.tail(100)
-    #Verificaciones realizadas
-    cursor.execute(f"""
-        SELECT orden_ing, suborden, renglon, fechaverif            
-        FROM [DEPOFIS].[DASSA].[Todo] 
-        WHERE fechaverif > '{fecha_ant}'
-    """)  
-    rows = cursor.fetchall()
-    columns = [column[0] for column in cursor.description]
-    verificaciones_realizadas = pd.DataFrame.from_records(rows, columns=columns)
-    #Salidas validadas
-    cursor.execute(f"""
-        SELECT orden_ing, suborden, renglon, validada          
-        FROM [DEPOFIS].[DASSA].[Salidas] 
-        WHERE validada > '{fecha_ant}'
-    """)  
-    rows = cursor.fetchall()
-    columns = [column[0] for column in cursor.description]
-    salidas = pd.DataFrame.from_records(rows, columns=columns)
-        #Turnos
-    cursor.execute(f"""
-    SELECT orden_ing, suborden, renglon, destino, dia, hora, observa, conocim2
-    FROM DEPOFIS.DASSA.[TURNOSSA] as e
-    WHERE dia >= '{fecha}'
-    """) 
-    rows = cursor.fetchall()
-    columns = [column[0] for column in cursor.description]
-    turnos = pd.DataFrame.from_records(rows, columns=columns)
-    turnos['destino'] = turnos['destino'].str.strip()
-    turnos['Estado'] = 'Pendiente'
-    turnos['observa'] = turnos['observa'].str.strip()
-    turnos = turnos[turnos['orden_ing'] != 0]
+
 
     conn.close()
 
@@ -222,13 +375,8 @@ def impo_update(username, password):
         return df
 
     def crear_operacion(df): 
-        df['id'] = (df['orden_ing'].astype(str) + '-' + df['suborden'].astype(str) + '-' + df['renglon'].astype(str))
+        df['operacion'] = (df['orden_ing'].astype(str) + '-' + df['suborden'].astype(str) + '-' + df['renglon'].astype(str))
         return(df)
-
-    def generate_id(df):
-        df['id'] = df[['orden_ing', 'suborden', 'renglon']].astype(str).agg('-'.join, axis=1)
-        df.drop(columns=['orden_ing', 'suborden', 'renglon'], inplace=True)
-        return df
 
     # IMPO a arribar
     arribos = transformar(arribos)
@@ -250,8 +398,8 @@ def impo_update(username, password):
     desco_egresados = egresado[(egresado['suborden'] == 0) & (egresado['tipo_oper'] == 'IMPORTACION')]
     desco_egresados = desco_egresados[desco_egresados['contenedor']!=""]
     desco_egresados = desco_egresados['contenedor'].unique()
-    contenedores_existente['contenedor'] = contenedores_existente['contenedor'].str.strip()
-    contenedores_existente= contenedores_existente[contenedores_existente['contenedor'] != '']
+    contenedores_existente_impo['contenedor'] = contenedores_existente_impo['contenedor'].str.strip()
+    contenedores_existente_impo= contenedores_existente_impo[contenedores_existente_impo['contenedor'] != '']
     arribados_a_desconsolidar= arribados_a_desconsolidar[arribados_a_desconsolidar['operacion'] == 'TD']
     arribados_a_desconsolidar= arribados_a_desconsolidar[arribados_a_desconsolidar['arribado'] == 1]
     arribados_a_desconsolidar['Entrega'] = arribados_a_desconsolidar['Entrega'].str.title()
@@ -260,10 +408,10 @@ def impo_update(username, password):
     pendiente_desconsolidar['Estado'] = 'Pte. Desc.'
     pendiente_desconsolidar.loc[pendiente_desconsolidar['contenedor'].isin(desconsolidados), 'Estado'] = 'Vacio'
     pendiente_desconsolidar = pendiente_desconsolidar[~pendiente_desconsolidar.isin(desco_egresados)]
-    contenedores_existente_uniques = contenedores_existente['contenedor'].unique()
-    pendiente_desconsolidar = pendiente_desconsolidar[pendiente_desconsolidar['contenedor'].isin(contenedores_existente_uniques)]
+    contenedores_existente = contenedores_existente_impo['contenedor'].unique()
+    pendiente_desconsolidar = pendiente_desconsolidar[pendiente_desconsolidar['contenedor'].isin(contenedores_existente)]
     pendiente_desconsolidar = pendiente_desconsolidar.merge(
-        contenedores_existente[['contenedor', 'cliente', 'cantidad']],
+        contenedores_existente_impo[['contenedor', 'cliente', 'cantidad']],
         on='contenedor',
         how='left'
     )
@@ -278,92 +426,22 @@ def impo_update(username, password):
     tally_resumen['Envase'] = tally_resumen['Envase'].str.title()
     pendiente_desconsolidar = pendiente_desconsolidar.merge(tally_resumen, on='contenedor', how='left')
     #Existente IMPO
-    existente['contenedor'] = existente['contenedor'].str.strip()
-    existente = crear_operacion(existente)
-    ubicaciones = crear_operacion(ubicaciones)
-    ubicaciones['ubicacion'] = ubicaciones['ubicacion'].str.strip()
-    existente = pd.merge(existente, ubicaciones[['id', 'ubicacion']], on='id', how='left')
+    existente_impo['contenedor'] = existente_impo['contenedor'].str.strip()
+    existente_impo = crear_operacion(existente_impo)
+    ubicaciones_existente = crear_operacion(ubicaciones_existente)
+    ubicaciones_existente['ubicacion'] = ubicaciones_existente['ubicacion'].str.strip()
+    existente_impo = pd.merge(existente_impo, ubicaciones_existente[['operacion', 'ubicacion']], on='operacion', how='left')
     familias_ubicaciones = pd.read_excel('flias_ubicaciones.xlsx')
-    existente = pd.merge(existente, familias_ubicaciones[['ubicacion', 'ubicacion_familia']], on='ubicacion', how='left')
-    existente['teus'] = existente['dimension']/20
-    existente_plz = existente[existente['ubicacion_familia'].isin(['Plazoleta', 'Temporal'])]
-    existente_alm = existente[~existente['ubicacion_familia'].isin(['Plazoleta', 'Temporal'])]
+    existente_impo = pd.merge(existente_impo, familias_ubicaciones[['ubicacion', 'ubicacion_familia']], on='ubicacion', how='left')
+    existente_impo['teus'] = existente_impo['dimension']/20
+    existente_plz = existente_impo[existente_impo['ubicacion_familia'].isin(['Plazoleta', 'Temporal'])]
+    existente_alm = existente_impo[~existente_impo['ubicacion_familia'].isin(['Plazoleta', 'Temporal'])]
     # Creo variable estado en Arribos IMPO
     arribos['Estado'] = arribos['arribado'].apply(lambda x: 'Pendiente arribo' if x == 0 else 'Arribado')
     arribos.loc[arribos['contenedor'].isin(pendiente_ingresado['contenedor']), 'Estado'] = 'Pendiente ingreso'
     arribos.loc[arribos['Estado'] == 'Arribado', 'tiempo_transcurrido'] = '---'
 
-
-    ##### TURNOS #####
-    turnos['id'] = turnos[['orden_ing', 'suborden', 'renglon']].astype(str).agg('-'.join, axis=1)
-    existente['id'] = existente[['orden_ing', 'suborden', 'renglon']].astype(str).agg('-'.join, axis=1)
-    egresado = generate_id(egresado)
-    verificaciones_realizadas = generate_id(verificaciones_realizadas)
-    salidas = generate_id(salidas)
-    salidas.columns = ['salida_validada', 'id']
-    ubicaciones = generate_id(ubicaciones)
-
-    turnos = limpiar_columnas(turnos)
-    existente = limpiar_columnas(existente)
-    #Separo segun tipo de turnos
-    verificaciones = turnos[turnos['destino'].str.contains('Verificacion', case=False, na=False)]
-    consolidados = turnos[turnos['destino'].str.contains('Consolidado', case=False, na=False)]
-    retiros_remisiones = turnos[turnos['destino'].str.contains('Retiro|Remi', case=False, na=False)]
-
-    # Consolidados
-    existente_a_consolidar = pd.merge(consolidados, existente.drop(columns=['id', 'suborden', 'renglon', 'conocim2']), on='orden_ing', how='inner')
-    contenedores_a_consolidar = existente_a_consolidar[existente_a_consolidar['Envase'] == 'Contenedor']
-    mercaderia_a_consolidar = existente_a_consolidar[existente_a_consolidar['Envase'] != 'Contenedor']
-    mercaderia_a_consolidar = mercaderia_a_consolidar.groupby('orden_ing').agg({
-        'volumen': 'sum',
-        'cantidad': 'sum',
-        'kilos': 'sum'}).reset_index()
-
-    # Join de contenedores y mercaderia
-    contenedores_a_consolidar.drop(columns=['volumen', 'cantidad', 'kilos'], inplace=True)
-
-    consolidados = pd.merge(contenedores_a_consolidar, mercaderia_a_consolidar, on='orden_ing', how='left')
-
-
-    # Quito conocimiento del existente
-    existente.drop(columns=['conocim2', 'orden_ing', 'suborden', 'renglon'], inplace=True)
-
-    # Retiros y remisiones (lo trato a parte porque tengo que hacer match con salidas)
-    retiros_remisiones_egr = pd.merge(retiros_remisiones, egresado.drop(columns=['ubicacion'], errors='ignore'), on='id', how='inner')
-    retiros_remisiones_egr['Estado'] = 'En curso'
-    retiros_remisiones_exist = pd.merge(retiros_remisiones, existente.drop(columns=['ubicacion'], errors='ignore'), on='id', how='inner')
-    retiros_remisiones_exist['Estado'] = 'Pendiente'
-    retiros_remisiones_exist = retiros_remisiones_exist[~retiros_remisiones_exist['id'].isin(retiros_remisiones_egr['id'])] #Se sacan casos de retiros parciales
-    retiros_remisiones = pd.concat([retiros_remisiones_egr, retiros_remisiones_exist], ignore_index=True)
-    retiros_remisiones = pd.merge(retiros_remisiones, salidas, on='id', how='left')
-    retiros_remisiones['fecha_salida_validada'] = pd.to_datetime(retiros_remisiones['salida_validada'], errors='coerce').dt.date
-    retiros_remisiones['salida_validada'] = retiros_remisiones.apply(
-        lambda row: float('nan') if pd.notna(row['fecha_salida_validada']) and row['fecha_salida_validada'] < datetime.now().date() else row['salida_validada'],
-        axis=1)
-    retiros_remisiones.drop(columns=['fecha_salida_validada'], inplace=True)
-    retiros_remisiones['Estado'] = retiros_remisiones.apply(
-        lambda row: row['salida_validada'][11:16] + ' Realizado' if pd.notna(row['salida_validada']) else row['Estado'],
-        axis=1)
-
-    # Verificaciones
-    verificaciones= pd.merge(verificaciones, verificaciones_realizadas, on='id', how='left')
-    verificaciones['Estado'] = verificaciones['fechaverif'].apply(lambda x: 'Realizado' if pd.notna(x) else 'Pendiente')
-    verificaciones_existente = pd.merge(verificaciones, existente.drop(columns=['ubicacion'], errors='ignore'), on='id', how='inner')
-    verificaciones_egresado = pd.merge(verificaciones, egresado.drop(columns=['ubicacion'], errors='ignore'), on='id', how='inner')
-    # Verificaciones sin dato
-    verificaciones_sin_dato = verificaciones[
-        ~verificaciones['id'].isin(verificaciones_existente['id']) &
-        ~verificaciones['id'].isin(verificaciones_egresado['id'])
-    ]
-    verificaciones = pd.concat([verificaciones_existente, verificaciones_egresado, verificaciones_sin_dato], ignore_index=True)
-    #Junto verificaciones con resto de turnos
-    turnos = pd.concat([retiros_remisiones, verificaciones, consolidados], ignore_index=True)
-    turnos.drop(columns=['ubicacion'], inplace=True)
-    #Join de ubicaciones
-    turnos = pd.merge(turnos, ubicaciones, on='id', how='left')
-    turnos = limpiar_columnas(turnos)
-
-    return turnos, arribos, pendiente_desconsolidar, existente_plz, existente_alm 
+    return arribos, pendiente_desconsolidar, existente_plz, existente_alm
 
 def arribos_update(username, password):
     import pyodbc
@@ -481,7 +559,7 @@ def arribos_update(username, password):
     """)
     rows = cursor.fetchall()
     columns = [column[0] for column in cursor.description]
-    contenedores_existente = pd.DataFrame.from_records(rows, columns=columns)
+    contenedores_existente_impo = pd.DataFrame.from_records(rows, columns=columns)
 
     #Pendiente consolidar
     cursor.execute("""
@@ -518,7 +596,7 @@ def arribos_update(username, password):
     """)  
     rows = cursor.fetchall()
     columns = [column[0] for column in cursor.description]
-    existente = pd.DataFrame.from_records(rows, columns=columns)
+    existente_impo = pd.DataFrame.from_records(rows, columns=columns)
 
     #Descargo Ubicaciones IMPO
     cursor.execute("""
@@ -622,8 +700,8 @@ def arribos_update(username, password):
     desco_egresados = egresado[(egresado['suborden'] == 0) & (egresado['tipo_oper'] == 'IMPORTACION')]
     desco_egresados = desco_egresados[desco_egresados['contenedor']!=""]
     desco_egresados = desco_egresados['contenedor'].unique()
-    contenedores_existente['contenedor'] = contenedores_existente['contenedor'].str.strip()
-    contenedores_existente= contenedores_existente[contenedores_existente['contenedor'] != '']
+    contenedores_existente_impo['contenedor'] = contenedores_existente_impo['contenedor'].str.strip()
+    contenedores_existente_impo= contenedores_existente_impo[contenedores_existente_impo['contenedor'] != '']
     arribados_a_desconsolidar= arribados_a_desconsolidar[arribados_a_desconsolidar['operacion'] == 'TD']
     arribados_a_desconsolidar= arribados_a_desconsolidar[arribados_a_desconsolidar['arribado'] == 1]
     arribados_a_desconsolidar['Entrega'] = arribados_a_desconsolidar['Entrega'].str.title()
@@ -632,10 +710,10 @@ def arribos_update(username, password):
     pendiente_desconsolidar['Estado'] = 'Pte. Desc.'
     pendiente_desconsolidar.loc[pendiente_desconsolidar['contenedor'].isin(desconsolidados), 'Estado'] = 'Vacio'
     pendiente_desconsolidar = pendiente_desconsolidar[~pendiente_desconsolidar.isin(desco_egresados)]
-    contenedores_existente = contenedores_existente['contenedor'].unique()
+    contenedores_existente = contenedores_existente_impo['contenedor'].unique()
     pendiente_desconsolidar = pendiente_desconsolidar[pendiente_desconsolidar['contenedor'].isin(contenedores_existente)]
     pendiente_desconsolidar = pendiente_desconsolidar.merge(
-        contenedores_existente[['contenedor', 'cliente', 'cantidad']],
+        contenedores_existente_impo[['contenedor', 'cliente', 'cantidad']],
         on='contenedor',
         how='left'
     )
@@ -671,16 +749,16 @@ def arribos_update(username, password):
     listos_para_remitir['Dias'] = (fecha_actual - listos_para_remitir['fecha_ing']).dt.days
 
     #Existente IMPO
-    existente['contenedor'] = existente['contenedor'].str.strip()
-    existente = crear_operacion(existente)
+    existente_impo['contenedor'] = existente_impo['contenedor'].str.strip()
+    existente_impo = crear_operacion(existente_impo)
     ubicaciones_existente = crear_operacion(ubicaciones_existente)
     ubicaciones_existente['ubicacion'] = ubicaciones_existente['ubicacion'].str.strip()
-    existente = pd.merge(existente, ubicaciones_existente[['operacion', 'ubicacion']], on='operacion', how='left')
+    existente_impo = pd.merge(existente_impo, ubicaciones_existente[['operacion', 'ubicacion']], on='operacion', how='left')
     familias_ubicaciones = pd.read_excel('flias_ubicaciones.xlsx')
-    existente = pd.merge(existente, familias_ubicaciones[['ubicacion', 'ubicacion_familia']], on='ubicacion', how='left')
-    existente['teus'] = existente['dimension']/20
-    existente_plz = existente[existente['ubicacion_familia'].isin(['Plazoleta', 'Temporal'])]
-    existente_alm = existente[~existente['ubicacion_familia'].isin(['Plazoleta', 'Temporal'])]
+    existente_impo = pd.merge(existente_impo, familias_ubicaciones[['ubicacion', 'ubicacion_familia']], on='ubicacion', how='left')
+    existente_impo['teus'] = existente_impo['dimension']/20
+    existente_plz = existente_impo[existente_impo['ubicacion_familia'].isin(['Plazoleta', 'Temporal'])]
+    existente_alm = existente_impo[~existente_impo['ubicacion_familia'].isin(['Plazoleta', 'Temporal'])]
 
     # Creo variable estado en Arribos IMPO
     arribos['Estado'] = arribos['arribado'].apply(lambda x: 'Pendiente arribo' if x == 0 else 'Arribado')

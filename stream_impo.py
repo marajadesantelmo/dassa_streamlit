@@ -5,11 +5,10 @@ import pandas as pd
 import time
 from datetime import datetime
 from tokens import username, password
-from utils import highlight, rellenar_df_vacio, turnos_update, arribos_impo_update
+from utils import highlight, rellenar_df_vacio, impo_update
 
 def fetch_data():
-    turnos = turnos_update(username, password)
-    arribos, pendiente_desconsolidar, existente_plz, existente_alm = arribos_impo_update(username, password)
+    turnos, arribos, pendiente_desconsolidar, existente_plz, existente_alm = impo_update(username, password)
     # Formateo
     arribos = arribos[['terminal', 'turno', 'contenedor', 'cliente', 'bookings', 'tipo_cnt', 'tiempo_transcurrido', 'Estado']]
     arribos.columns = ['Terminal', 'Turno', 'Contenedor', 'Cliente', 'Bookings', 'Tipo', 'Temp.', 'Estado']
