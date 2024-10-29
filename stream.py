@@ -3,6 +3,10 @@ import stream_impo
 import stream_expo
 import stream_impo_historico
 import stream_expo_historico
+import threading
+import time
+from utils import fetch_data
+from tokens import username, password
 
 st.set_page_config(page_title="Operativa DASSA", 
                    page_icon="📊", 
@@ -23,6 +27,26 @@ page_selection = st.sidebar.radio('Seleccionar',
 
 # Update session state based on user selection
 st.session_state.page_selection = page_selection
+
+# Background function to update data
+def update_data(update_event):
+    while True:
+        new_data = fetch_data(username, password)
+        st.session_state.data = new_data
+        update_event.set()  # Signal data has been updated
+        time.sleep(150)  # Update every 3 minutes
+
+
+# Initialize session state for data
+if 'data' not in st.session_state:
+    with st.spinner('Cargando datos del SQL de DEPOFS. Esta acción puede tardar unos minutos...'):
+        st.session_state.data = fetch_data(username, password)
+    update_event = threading.Event()
+    # Start background thread to update data
+    threading.Thread(target=update_data, args=(update_event,), daemon=True).start()
+
+
+# Apply custom styles
 st.markdown(
     """
     <style>
