@@ -11,8 +11,18 @@ st.set_page_config(page_title="Operativa DASSA",
 
 # Sidebar Navigation
 st.sidebar.title("Menú de Navegación")
-page_selection = st.sidebar.radio('Seleccionar', ["IMPO Orden del día", "EXPO Orden del día", "IMPO Histórico", "EXPO Histórico"])
 
+# Initialize session state for page selection
+if 'page_selection' not in st.session_state:
+    st.session_state.page_selection = "IMPO Orden del día"
+
+# Sidebar radio button for page selection
+page_selection = st.sidebar.radio('Seleccionar', 
+                                  ["IMPO Orden del día", "EXPO Orden del día", "IMPO Histórico", "EXPO Histórico"],
+                                  index=["IMPO Orden del día", "EXPO Orden del día", "IMPO Histórico", "EXPO Histórico"].index(st.session_state.page_selection))
+
+# Update session state based on user selection
+st.session_state.page_selection = page_selection
 st.markdown(
     """
     <style>
@@ -77,12 +87,12 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Load the appropriate page based on sidebar selection
-if page_selection == "IMPO Orden del día":
-    stream_impo.show_page()  # Function to render the IMPO page
-elif page_selection == "EXPO Orden del día":
-    stream_expo.show_page()  # Function to render the EXPO page
-elif page_selection == "IMPO Histórico":
-    stream_impo_historico.show_page()  # Function to render the IMPO historical page
-elif page_selection == "EXPO Histórico":
-    stream_expo_historico.show_page()  # Function to render the EXPO historical page
+# Display the selected page content
+if st.session_state.page_selection == "IMPO Orden del día":
+    stream_impo.show_page()
+elif st.session_state.page_selection == "EXPO Orden del día":
+    stream_expo.show_page()
+elif st.session_state.page_selection == "IMPO Histórico":
+    stream_impo_historico.show_page()
+elif st.session_state.page_selection == "EXPO Histórico":
+    stream_expo_historico.show_page()

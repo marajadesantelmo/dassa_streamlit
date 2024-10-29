@@ -1,56 +1,40 @@
 import streamlit as st
 import pandas as pd
-#import gspread
-#from streamlit_gsheets import GSheetsConnection
-import time
 from datetime import datetime
+from utils import highlight, fetch_data
 from tokens import username, password
-from utils import highlight, rellenar_df_vacio, impo_update
+import threading
+import time
 
-def fetch_data():
-    turnos, arribos, pendiente_desconsolidar, existente_plz, existente_alm = impo_update(username, password)
-    # Formateo
-    arribos = arribos[['terminal', 'turno', 'contenedor', 'cliente', 'bookings', 'tipo_cnt', 'tiempo_transcurrido', 'Estado']]
-    arribos.columns = ['Terminal', 'Turno', 'Contenedor', 'Cliente', 'Bookings', 'Tipo', 'Temp.', 'Estado']
-    arribos['Cliente'] = arribos['Cliente'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
-    arribos['Bookings'] = arribos['Bookings'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
-    arribos['Turno'] = arribos['Turno'].apply(lambda x: f"{str(x)[:-2]}:{str(x)[-2:]}")
+# Function to fetch and cache data every 5 minutes
+@st.cache_data(ttl=300)
+def get_data():
+    return fetch_data(username, password)
 
-    pendiente_desconsolidar = pendiente_desconsolidar[['contenedor', 'cliente', 'Entrega', 'vto_vacio', 'tipo_cnt', 'peso','Estado']]
-    pendiente_desconsolidar.columns = ['Contenedor', 'Cliente', 'Entrega', 'Vto. Vacio', 'Tipo', 'Peso', 'Estado']
-    pendiente_desconsolidar['Entrega'] = pendiente_desconsolidar['Entrega'].fillna('-')
-    pendiente_desconsolidar['Cliente'] = pendiente_desconsolidar['Cliente'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
-
-    turnos['cliente'] = turnos['cliente'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
-    turnos['desc_merc'] = turnos['desc_merc'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
-    turnos['ubicacion'] = turnos['ubicacion'].str.strip()
-
-    verificaciones_impo = turnos[(turnos['tipo_oper'] == 'Importacion') & (turnos['destino'] == 'Verificacion')]
-    verificaciones_impo = verificaciones_impo[['dia', 'cliente', 'desc_merc', 'contenedor', 'Envase', 'cantidad', 'ubicacion', 'Estado']]
-    verificaciones_impo.columns = ['Dia', 'Cliente', 'Desc. Merc.', 'Contenedor', 'Envase', 'Cant.', 'Ubic.', 'Estado']
-
-    retiros = turnos[(turnos['tipo_oper'] == 'Importacion') & (turnos['destino'] == 'Retiro')]
-    retiros = retiros[['dia', 'cliente', 'conocim1', 'contenedor', 'Envase', 'cantidad', 'ubicacion', 'Estado']]
-    retiros.columns = ['Dia', 'Cliente', 'Conocim.', 'Contenedor', 'Envase', 'Cant.', 'Ubic.', 'Estado']
-    retiros['Conocim.'] = retiros['Conocim.'].str.strip()
-
-    otros_impo = turnos[(turnos['tipo_oper'] == 'Importacion') & (~turnos['destino'].isin(['Retiro', 'Verificacion']))]
-    otros_impo = otros_impo[['dia', 'hora', 'id', 'cliente', 'contenedor', 'Envase', 'cantidad', 'ubicacion', 'Estado']]
-    otros_impo.columns = ['Dia', 'Hora', 'Operacion', 'Cliente', 'Contenedor', 'Envase', 'Cant.', 'Ubic.', 'Estado']
-
-    #Se rellenan los dataframes vacios
-    arribos = rellenar_df_vacio(arribos)
-    pendiente_desconsolidar = rellenar_df_vacio(pendiente_desconsolidar)
-    verificaciones_impo = rellenar_df_vacio(verificaciones_impo)
-    retiros = rellenar_df_vacio(retiros)
-    otros_impo = rellenar_df_vacio(otros_impo)
-
-    return arribos, pendiente_desconsolidar, verificaciones_impo, retiros, otros_impo
+# Background function to update expo data
+def update_data(update_event):
+    while True:
+        new_data = fetch_data(username, password)
+        st.session_state.data = new_data
+        update_event.set()  # Signal data has been updated
+        time.sleep(300)  # Update every 5 minutes
 
 def show_page():
-    # Load data
-    arribos, pendiente_desconsolidar, verificaciones_impo, retiros, otros_impo = fetch_data()
+    # Check if data is in session state, load if not
+    if 'data' not in st.session_state:
+        with st.spinner('Loading initial data...'):
+            st.session_state.data = get_data()
+        update_event = threading.Event()
+        # Start background thread to update data
+        threading.Thread(target=update_data, args=(update_event,), daemon=True).start()
+    else:
+        update_event = threading.Event()
 
+    # Load data from session state
+    data = st.session_state.data
+    arribos, pendiente_desconsolidar, verificaciones_impo, retiros, otros_impo, arribos_expo_carga, arribos_expo_ctns, verificaciones_expo, retiros, otros_expo, remisiones, consolidados = data
+
+    # Layout setup
     col_logo, col_title = st.columns([2, 5])
     with col_logo:
         st.image('logo.png')
@@ -58,15 +42,12 @@ def show_page():
         current_day = datetime.now().strftime("%d/%m/%Y")
         st.title(f"Operaciones de IMPO a partir del {current_day}")
 
-    # Create two columns
+    # Columns for displaying data
     col1, col2 = st.columns(2)
-
-    # Column 1: Arribos
     with col1:
         st.header("Arribos Contenedores")
         st.dataframe(arribos.style.apply(highlight, axis=1).set_properties(subset=['Cliente'], **{'width': '20px'}), hide_index=True, use_container_width=True)
 
-    # Column 2: Pendiente Desconsolidar
     with col2:
         st.header("Pendiente Desconsolidar y Vacios")
         st.dataframe(pendiente_desconsolidar.style.apply(highlight, axis=1).format(precision=0), hide_index=True, use_container_width=True)
@@ -83,12 +64,10 @@ def show_page():
         st.header("Retiros")
         st.dataframe(retiros.style.apply(highlight, axis=1), hide_index=True, use_container_width=True)
 
-    print('Esperando 5 para actualizar')
-    time.sleep(60*5)
-    print('Actualizando')
-    st.rerun()
+    # Check if update_event was triggered, then rerun if data updated
+    if update_event.is_set():
+        st.experimental_rerun()
 
 # Run the show_page function
 if __name__ == "__main__":
     show_page()
-

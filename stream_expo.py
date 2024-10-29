@@ -1,51 +1,38 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-from utils import highlight, rellenar_df_vacio
+from utils import highlight, fetch_data
+from tokens import username, password
+import time
+import threading
 
-def fetch_data():
-    arribos_expo = pd.read_csv('data/arribos_expo.csv')
-    arribos_expo_carga = arribos_expo[arribos_expo['tipo_oper'] != 'VACIO']
-    arribos_expo_ctns = arribos_expo[arribos_expo['tipo_oper'] == 'VACIO']
+@st.cache_data(ttl=300)
+def get_data():
+    return fetch_data(username, password)
 
-    arribos_expo_carga = arribos_expo_carga[['fecha', 'bookings', 'cliente', 'desc_merc', 'Estado']]
-    arribos_expo_carga.columns = ['Fecha', 'Bookings', 'Cliente', 'Desc. Merc.', 'Estado']
-
-    arribos_expo_ctns = arribos_expo_ctns[['fecha', 'bookings', 'cliente', 'dimension', 'contenedor', 'precinto','Estado']]
-    arribos_expo_ctns.columns = ['Fecha', 'Bookings', 'Cliente', 'Dimension', 'Contenedor', 'Precinto', 'Estado']   
-
-    turnos= pd.read_csv('data/turnos.csv')
-
-    verificaciones_expo = turnos[(turnos['tipo_oper'] == 'Exportacion') & (turnos['destino'] == 'Verificacion')]
-    verificaciones_expo = verificaciones_expo[['dia', 'cliente', 'desc_merc', 'contenedor', 'Envase', 'cantidad', 'ubicacion']]
-    verificaciones_expo = rellenar_df_vacio(verificaciones_expo)
-    verificaciones_expo.columns = ['Dia', 'Cliente', 'Desc. Merc.', 'Contenedor', 'Envase', 'Cantidad', 'Ubic.']
-
-    retiros = turnos[(turnos['tipo_oper'] == 'Exportacion') & (turnos['destino'] == 'Retiro')]
-    retiros = retiros[['dia', 'cliente', 'conocim1', 'contenedor', 'Envase', 'cantidad', 'ubicacion', 'Estado']]
-    retiros.columns = ['Dia', 'Cliente', 'Conocim.', 'Contenedor', 'Envase', 'Cantidad', 'Ubic.', 'Estado']
-
-    otros_expo = turnos[(turnos['tipo_oper'] == 'Exportacion') & (~turnos['destino'].isin(['Retiro', 'Verificacion']))]
-    otros_expo = otros_expo[['dia', 'hora', 'id', 'cliente', 'contenedor', 'Envase', 'cantidad', 'ubicacion']]
-    otros_expo.columns = ['Dia', 'Hora', 'Operacion', 'Cliente', 'Contenedor', 'Envase', 'Cantidad', 'Ubic.']
-
-    remisiones = turnos[turnos['destino'] == 'Remision']
-    consolidados = turnos[turnos['destino'] == 'Consolidado']
-
-    arribos_expo_carga = rellenar_df_vacio(arribos_expo_carga)
-    arribos_expo_ctns = rellenar_df_vacio(arribos_expo_ctns)
-    verificaciones_expo = rellenar_df_vacio(verificaciones_expo)
-    retiros = rellenar_df_vacio(retiros)
-    otros_expo = rellenar_df_vacio(otros_expo)
-    remisiones = rellenar_df_vacio(remisiones)
-    consolidados = rellenar_df_vacio(consolidados)
-
-    return arribos_expo_carga, arribos_expo_ctns, verificaciones_expo, retiros, otros_expo, remisiones, consolidados
-    
+# Background function to update expo data
+def update_data(update_event):
+    while True:
+        new_data = fetch_data(username, password)
+        st.session_state.data = new_data
+        update_event.set()  # Signal data has been updated
+        time.sleep(300)  # Update every 5 minutes
 
 def show_page():
-    # Load data
-    arribos_expo_carga, arribos_expo_ctns, verificaciones_expo, retiros, otros_expo, remisiones, concolidados = fetch_data()
+    # Check if data is in session state, load if not
+    if 'data' not in st.session_state:
+        with st.spinner('Loading initial data...'):
+            st.session_state.data = get_data()
+        update_event = threading.Event()
+        # Start background thread to update data
+        threading.Thread(target=update_data, args=(update_event,), daemon=True).start()
+    else:
+        update_event = threading.Event()
+
+    # Load data from session state
+    data = st.session_state.data
+    data = get_data()
+    arribos, pendiente_desconsolidar, verificaciones_impo, retiros, otros_impo, arribos_expo_carga, arribos_expo_ctns, verificaciones_expo, retiros, otros_expo, remisiones, consolidados = data
 
     col_logo, col_title = st.columns([2, 5])
     with col_logo:
@@ -84,12 +71,12 @@ def show_page():
         st.dataframe(remisiones.style.apply(highlight, axis=1), hide_index=True)
 
         st.subheader("Consolidados")
-        st.dataframe(concolidados.style.apply(highlight, axis=1), hide_index=True)
+        st.dataframe(consolidados.style.apply(highlight, axis=1), hide_index=True)
 
-    print('Esperando 5 para actualizar')
-    time.sleep(60*5)
-    print('Actualizando')
-    st.rerun()
+    # Check for data updates
+    if update_event.is_set():
+        st.experimental_rerun()
+
 
 # Run the show_page function
 if __name__ == "__main__":
