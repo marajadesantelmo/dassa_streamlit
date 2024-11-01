@@ -1,49 +1,32 @@
 orden_ing,suborden,renglon,contenedor,fecha_ing,tipo_oper,bookings,cantidad,kilos,volumen,cliente,Dias
-31390,0,1,,2024-10-18,EXPORTACION    ,                    ,551,1116.00,0.00,Mercovan Argentina Srl,4
-31237,0,1,,2024-10-09,EXPORTACION    ,                    ,65,900.00,9.00,Lift Van Int. Co S.A,13
-31145,0,1,,2024-10-02,EXPORTACION    ,                    ,99,1700.00,27.00,Lift Van Int. Co S.A,20
-31372,0,1,,2024-10-14,EXPORTACION    ,                    ,60,860.00,12.00,Lift Van Int. Co S.A,8
-31414,0,1,,2024-10-16,EXPORTACION    ,COSU6399731130      ,381,6420.00,0.00,Lift Van Int. Co S.A,6
-31410,0,1,,2024-10-21,EXPORTACION    ,                    ,153,3680.00,0.00,Lift Van Int. Co S.A,1
-31371,0,1,,2024-10-14,EXPORTACION    ,                    ,139,2600.00,30.00,Lift Van Int. Co S.A,8
-31288,0,1,,2024-10-08,EXPORTACION    ,245350576           ,406,7780.00,77.00,Lift Van Int. Co S.A,14
-31405,0,2,,2024-10-18,EXPORTACION    ,                    ,1180,5218.00,0.00,De La Fuente Ricardo Jose,4
-31405,0,3,,2024-10-18,EXPORTACION    ,                    ,1065,5543.85,0.00,De La Fuente Ricardo Jose,4
-31345,0,3,,2024-10-16,EXPORTACION    ,243602276           ,50,16278.10,0.00,Hilado Sa,6
-31345,0,2,,2024-10-16,EXPORTACION    ,243602276           ,50,16590.40,0.00,Hilado Sa,6
-31405,0,1,,2024-10-18,EXPORTACION    ,                    ,924,3443.55,0.00,De La Fuente Ricardo Jose,4
-31345,0,1,,2024-10-16,EXPORTACION    ,243602276           ,50,16613.00,0.00,Hilado Sa,6
-5126,0,1,,2018-03-02,EXPORTACION    ,                    ,1,100.00,0.00,Hra Consultora,2426
-29259,0,1,,2024-06-24,EXPORTACION    ,EBKG09174946        ,1,0.00,1.87,Minera Santa Rita Srl,120
-29357,0,1,,2024-06-28,EXPORTACION    ,                    ,1,844.31,1.87,Minera Santa Rita Srl,116
-29624,0,1,,2024-07-15,EXPORTACION    ,NBOBUE24050057      ,2,715.56,1.67,Piranga Sa,99
-31413,0,2,,2024-10-21,EXPORTACION    ,                    ,12,6697.00,0.00,Capilatis S.A.,1
-31413,0,1,,2024-10-21,EXPORTACION    ,                    ,14,7813.00,0.00,Capilatis S.A.,1
-31413,0,4,,2024-10-21,EXPORTACION    ,                    ,10,5581.50,0.00,Capilatis S.A.,1
-31413,0,3,,2024-10-21,EXPORTACION    ,                    ,14,7813.00,0.00,Capilatis S.A.,1
-27266,0,1,,2024-01-12,EXPORTACION    ,24001EC01002212Z    ,1,848.26,1.94,Manufactura Los Andes S.A.,284
-27684,0,1,,2024-02-21,EXPORTACION    ,                    ,5,250.58,0.29,Semillas Y Cereales S R L,244
-31412,0,2,,2024-10-21,EXPORTACION    ,                    ,20,26797.00,0.00,Santa Anita Oil Sa,1
-31409,0,1,,2024-10-21,EXPORTACION    ,                    ,16,26640.00,0.00,Suabia Maderas Srl,1
-31412,0,3,,2024-10-21,EXPORTACION    ,                    ,44,27250.00,0.00,Santa Anita Oil Sa,1
-31370,0,3,,2024-10-17,EXPORTACION    ,                    ,46,25020.00,60.00,Forestal Bosques Del Plata Sa,5
-31412,0,1,,2024-10-21,EXPORTACION    ,                    ,21,26600.00,0.00,Santa Anita Oil Sa,1
-31222,0,1,,2024-10-09,EXPORTACION    ,                    ,20,22060.00,0.00,Forestal Bosques Del Plata Sa,13
-31389,0,1,,2024-10-18,EXPORTACION    ,                    ,441,27940.00,0.00,Carpal Sa,4
-31370,0,2,,2024-10-17,EXPORTACION    ,                    ,60,25800.00,60.00,Forestal Bosques Del Plata Sa,5
-31222,0,2,,2024-10-09,EXPORTACION    ,                    ,20,22060.00,0.00,Forestal Bosques Del Plata Sa,13
-31370,0,1,,2024-10-17,EXPORTACION    ,                    ,60,25680.00,60.00,Forestal Bosques Del Plata Sa,5
-31370,0,5,,2024-10-17,EXPORTACION    ,                    ,74,24760.00,60.00,Forestal Bosques Del Plata Sa,5
-31370,0,4,,2024-10-17,EXPORTACION    ,                    ,74,24800.00,60.00,Forestal Bosques Del Plata Sa,5
-31307,0,2,,2024-10-15,EXPORTACION    ,24001EC01067279R    ,10,24640.00,60.00,Arleather S.R.L.,7
-31307,0,1,,2024-10-15,EXPORTACION    ,24001EC01067279R    ,10,24640.00,60.00,Arleather S.R.L.,7
-31346,0,2,,2024-10-16,EXPORTACION    ,                    ,10,24713.00,60.00,Arleather S.R.L.,6
-31346,0,1,,2024-10-16,EXPORTACION    ,                    ,10,24713.00,60.00,Arleather S.R.L.,6
-31346,0,3,,2024-10-16,EXPORTACION    ,                    ,10,24714.00,60.00,Arleather S.R.L.,6
-31361,0,1,,2024-10-17,EXPORTACION    ,62641596            ,10,27805.00,60.00,Arleather S.R.L.,5
-31361,0,2,,2024-10-17,EXPORTACION    ,62641596            ,10,27805.00,60.00,Arleather S.R.L.,5
-31411,0,2,,2024-10-21,EXPORTACION    ,                    ,30,29250.00,0.00,Lawter Argentina S.A.,1
-31411,0,1,,2024-10-21,EXPORTACION    ,                    ,30,29250.00,0.00,Lawter Argentina S.A.,1
-31411,0,3,,2024-10-21,EXPORTACION    ,                    ,30,29250.00,0.00,Lawter Argentina S.A.,1
-31219,0,2,,2024-10-08,EXPORTACION    ,                    ,4,2205.00,5.00,Pallets Jauregui Sociedad Anonima,14
-29188,0,1,,2024-06-14,EXPORTACION    ,                    ,1,1312.78,3.33,Cortez Srl,130
+27266,0,1,,2024-01-12,EXPORTACION    ,24001EC01002212Z    ,1,848.26,1.94,Manufactura Los Andes S.A.,294
+5126,0,1,,2018-03-02,EXPORTACION    ,                    ,1,100.00,0.00,Hra Consultora,2436
+27684,0,1,,2024-02-21,EXPORTACION    ,                    ,5,250.58,0.29,Semillas Y Cereales S R L,254
+29188,0,1,,2024-06-14,EXPORTACION    ,                    ,1,1312.78,3.33,Cortez Srl,140
+29259,0,1,,2024-06-24,EXPORTACION    ,EBKG09174946        ,1,0.00,1.87,Minera Santa Rita Srl,130
+29357,0,1,,2024-06-28,EXPORTACION    ,                    ,1,844.31,1.87,Minera Santa Rita Srl,126
+29624,0,1,,2024-07-15,EXPORTACION    ,NBOBUE24050057      ,2,715.56,1.67,Piranga Sa,109
+31219,0,2,,2024-10-08,EXPORTACION    ,                    ,4,2205.00,5.00,Pallets Jauregui Sociedad Anonima,24
+31405,0,3,,2024-10-18,EXPORTACION    ,                    ,1065,5543.85,0.00,De La Fuente Ricardo Jose,14
+31405,0,1,,2024-10-18,EXPORTACION    ,                    ,924,3443.55,0.00,De La Fuente Ricardo Jose,14
+31405,0,2,,2024-10-18,EXPORTACION    ,                    ,1180,5218.00,0.00,De La Fuente Ricardo Jose,14
+31449,0,1,,2024-10-15,EXPORTACION    ,                    ,71,1220.00,0.00,Lift Van Int. Co S.A,17
+31510,0,1,,2024-10-24,EXPORTACION    ,ZIMUCRT906161/1     ,22,23060.00,0.00,Valerio Oliva Forestal Sa,8
+31511,0,1,,2024-10-24,EXPORTACION    ,ZIMUCRT906161/1     ,32,13133.00,0.00,Pelama Chubut S.A.,8
+31518,0,1,,2024-10-25,EXPORTACION    ,                    ,140,2220.00,0.00,Lift Van Int. Co S.A,7
+31484,0,1,,2024-10-23,EXPORTACION    ,                    ,18,25420.00,0.00,Hector Reboratti,9
+31619,0,1,,2024-10-28,EXPORTACION    ,                    ,45,1300.00,0.00,Essadin Int´L S.A.,4
+31632,0,1,,2024-10-29,EXPORTACION    ,24001PER1           ,420,6188.00,0.00,Mercovan Argentina Srl,3
+31654,0,1,,2024-10-31,EXPORTACION    ,                    ,66,24273.00,60.00,Pelama Chubut S.A.,1
+31663,0,3,,2024-10-31,EXPORTACION    ,                    ,10,25600.00,0.00,Arleather S.R.L.,1
+31663,0,1,,2024-10-31,EXPORTACION    ,                    ,10,25600.00,0.00,Arleather S.R.L.,1
+31663,0,2,,2024-10-31,EXPORTACION    ,                    ,10,25600.00,0.00,Arleather S.R.L.,1
+31676,0,4,,2024-11-01,EXPORTACION    ,                    ,15,27700.00,0.00,Norfor Sa,0
+31676,0,1,,2024-11-01,EXPORTACION    ,                    ,15,27500.00,0.00,Norfor Sa,0
+31676,0,5,,2024-11-01,EXPORTACION    ,                    ,14,27850.00,0.00,Norfor Sa,0
+31676,0,3,,2024-11-01,EXPORTACION    ,                    ,14,28000.00,0.00,Norfor Sa,0
+31676,0,2,,2024-11-01,EXPORTACION    ,                    ,15,27200.00,0.00,Norfor Sa,0
+31677,0,1,,2024-11-01,EXPORTACION    ,                    ,21,19446.00,0.00,J. Llorente Y Cía. S.A.,0
+31678,0,2,,2024-11-01,EXPORTACION    ,                    ,10,26540.00,0.00,Arleather S.R.L.,0
+31678,0,1,,2024-11-01,EXPORTACION    ,                    ,10,27210.00,0.00,Arleather S.R.L.,0
+31679,0,1,,2024-10-30,EXPORTACION    ,340400037806        ,44,53800.00,120.00,Forestal Y Ganadera Indumarca Sa,2

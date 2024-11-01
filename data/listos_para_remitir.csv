@@ -1,8 +1,41 @@
 orden_ing,contenedor,conocim,cliente,bookings,tipo_cnt,dimension,fecha_ing,Dias
-31373,MRKU-030629-4,245235638                     ,Mercovan Argentina Srl                                                          ,245235638           ,DR,40,2024-10-17,5
-29632,FSCU-800502-9,EBKG09469662                  ,Cortez Srl                                                                      ,EBKG09469662        ,HC,40,2024-07-10,104
-31271,FFAU-175574-5,64974599                      ,Maringa Maderas Sa                                                              ,64974599            ,HC,40,2024-10-14,8
-31291,HLBU-168366-8,68641669                      ,Carpal Sa                                                                       ,68641669            ,HC,40,2024-10-10,12
-31293,UACU-536890-2,67307670                      ,Lodeco Artli S. R. L.                                                           ,67307670            ,HC,40,2024-10-14,8
-31292,CAIU-853356-4,63975008                      ,Pallets Jauregui Sociedad Anonima                                               ,63975008            ,HC,40,2024-10-10,12
-30411,MAGU-241502-1,ZIMUBUE9033839                ,Jsos S.R.L                                                                      ,ZIMUBUE9033839      ,DR,20,2024-08-23,60
+29632,FSCU-800502-9,EBKG09469662                  ,Cortez Srl                                                                      ,EBKG09469662        ,HC,40,2024-07-10,114
+30411,MAGU-241502-1,ZIMUBUE9033839                ,Jsos S.R.L                                                                      ,ZIMUBUE9033839      ,DR,20,2024-08-23,70
+31444,MRKU-349932-4,245416955                     ,Arleather S.R.L.                                                                ,245416955           ,HC,40,2024-10-22,10
+31445,MSKU-981085-7,245416955                     ,Arleather S.R.L.                                                                ,245416955           ,HC,40,2024-10-22,10
+31532,TLLU-535266-0,245416861                     ,Arleather S.R.L.                                                                ,245416861           ,HC,40,2024-10-25,7
+31533,MRSU-491693-4,245416861                     ,Arleather S.R.L.                                                                ,245416861           ,HC,40,2024-10-25,7
+31534,MRSU-501818-5,245416861                     ,Arleather S.R.L.                                                                ,245416861           ,HC,40,2024-10-25,7
+31549,CAAU-536037-5,340400034912                  ,Isischu Srl                                                                     ,340400034912        ,HC,40,2024-10-24,8
+31557,MSKU-740717-0,245725236                     ,Sky Cargo S.R.L.                                                                ,245725236           ,DR,20,2024-10-24,8
+31578,TCLU-630275-2,245302457                     ,Hector Reboratti                                                                ,245302457           ,HC,40,2024-10-28,4
+31579,MSKU-897457-9,245302457                     ,Hector Reboratti                                                                ,245302457           ,HC,40,2024-10-28,4
+31580,MRSU-403915-7,245302457                     ,Hector Reboratti                                                                ,245302457           ,HC,40,2024-10-28,4
+31596,GLDU-948595-8,EBKG10553950                  ,Lift Van Int. Co S.A                                                            ,EBKG10553950        ,DR,20,2024-10-28,4
+31597,MRKU-774532-3,245675916                     ,Mercovan Argentina Srl                                                          ,245675916           ,DR,20,2024-10-28,4
+31610,MRKU-059121-0,245345787                     ,Manufactura Los Andes S.A.                                                      ,245345787           ,DR,40,2024-10-28,4
+31618,EISU-824516-5,340400036052                  ,Weiden Sociedad Anonima                                                         ,340400036052        ,HC,40,2024-10-29,3
+31634,FCGU-224051-2,BUA0329857                    ,Lift Van Int. Co S.A                                                            ,BUA0329857          ,DR,20,2024-10-25,7
+31635,TCNU-596220-8,BUA0329857                    ,Lift Van Int. Co S.A                                                            ,BUA0329857          ,HC,40,2024-10-25,7
+31636,HLBU-166782-0,65303154                      ,Forestadora Tapebicua S.A.U                                                     ,65303154            ,HC,40,2024-10-28,4
+31640,SUDU-896206-2,245891014                     ,Leterago Sa                                                                     ,245891014           ,HC,40,2024-10-28,4
+31641,MSKU-056293-4,245891014                     ,Leterago Sa                                                                     ,245891014           ,HC,40,2024-10-28,4
+31642,MRSU-328593-7,245891014                     ,Leterago Sa                                                                     ,245891014           ,HC,40,2024-10-28,4
+31642,MRSU-328593-7,245891014                     ,Leterago Sa                                                                     ,245891014           ,HC,40,2024-10-28,4
+31643,GCXU-555624-8,245891014                     ,Leterago Sa                                                                     ,245891014           ,HC,40,2024-10-29,3
+31646,HLBU-220913-9,61303152                      ,Norfor Sa                                                                       ,61303152            ,HC,40,2024-10-29,3
+31648,MSKU-654684-3,245039869                     ,Hector Reboratti                                                                ,245039869           ,HC,40,2024-10-24,8
+31649,MSKU-620318-7,245039869                     ,Hector Reboratti                                                                ,245039869           ,HC,40,2024-10-24,8
+31658,EISU-852440-5,340400037130                  ,Maringa Maderas Sa                                                              ,340400037130        ,HC,40,2024-10-30,2
+31659,TRHU-521190-0,340400037130                  ,Maringa Maderas Sa                                                              ,340400037130        ,HC,40,2024-10-30,2
+31660,EITU-102997-5,340400037130                  ,Maringa Maderas Sa                                                              ,340400037130        ,HC,40,2024-10-30,2
+31661,EGSU-930272-8,340400037130                  ,Maringa Maderas Sa                                                              ,340400037130        ,HC,40,2024-10-30,2
+31662,TGBU-992910-5,340400037130                  ,Maringa Maderas Sa                                                              ,340400037130        ,HC,40,2024-10-30,2
+31664,CRXU-301810-4,EBKG10668794                  ,Borax Argentina S A                                                             ,EBKG10668794        ,DR,20,2024-10-30,2
+31665,HPCU-252174-4,EBKG10668794                  ,Borax Argentina S A                                                             ,EBKG10668794        ,DR,20,2024-10-30,2
+31666,MSNU-305730-8,EBKG10668794                  ,Borax Argentina S A                                                             ,EBKG10668794        ,DR,20,2024-10-30,2
+31667,MSMU-153893-3,EBKG10668794                  ,Borax Argentina S A                                                             ,EBKG10668794        ,DR,20,2024-10-30,2
+31668,MSMU-130873-5,EBKG10668799                  ,Borax Argentina S A                                                             ,EBKG10668799        ,DR,20,2024-10-30,2
+31669,MSDU-247116-5,EBKG10668799                  ,Borax Argentina S A                                                             ,EBKG10668799        ,DR,20,2024-10-30,2
+31670,MEDU-256708-5,EBKG10668799                  ,Borax Argentina S A                                                             ,EBKG10668799        ,DR,20,2024-10-31,1
+31671,MSDU-128859-2,EBKG10668799                  ,Borax Argentina S A                                                             ,EBKG10668799        ,DR,20,2024-10-31,1
