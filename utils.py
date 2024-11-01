@@ -219,6 +219,7 @@ def fetch_data(username, password):
         df['contenedor'] = df['contenedor'].str.strip()
         df = df[df['contenedor'] != '']
         # Operacion
+        df = df.copy()
         df.loc[:, 'operacion'] = df['operacion'].str.strip()
         return df
 

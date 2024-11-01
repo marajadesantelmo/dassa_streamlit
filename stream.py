@@ -21,30 +21,37 @@ if 'page_selection' not in st.session_state:
     st.session_state.page_selection = "IMPO Orden del día"
 
 # Sidebar radio button for page selection
-page_selection = st.sidebar.radio('Seleccionar', 
-                                  ["IMPO Orden del día", "EXPO Orden del día", "IMPO Histórico", "EXPO Histórico"],
-                                  index=["IMPO Orden del día", "EXPO Orden del día", "IMPO Histórico", "EXPO Histórico"].index(st.session_state.page_selection))
+page_selection = st.sidebar.radio(
+    'Seleccionar', 
+    ["IMPO Orden del día", "EXPO Orden del día", "IMPO Histórico", "EXPO Histórico"],
+    index=["IMPO Orden del día", "EXPO Orden del día", "IMPO Histórico", "EXPO Histórico"].index(st.session_state.page_selection)
+)
 
 # Update session state based on user selection
 st.session_state.page_selection = page_selection
 
-# Background function to update data
+# Background function to fetch new data without directly updating st.session_state
 def update_data(update_event):
     while True:
         new_data = fetch_data(username, password)
-        st.session_state.data = new_data
-        update_event.set()  # Signal data has been updated
-        time.sleep(150)  # Update every 3 minutes
+        st.session_state.new_data = new_data  # Temporary storage for new data
+        update_event.set()  # Signal that new data is ready
+        time.sleep(150)  # Fetch every 3 minutes
 
-
-# Initialize session state for data
+# Initialize session state for data if not already set
 if 'data' not in st.session_state:
     with st.spinner('Cargando datos del SQL de DEPOFS. Esta acción puede tardar unos minutos...'):
         st.session_state.data = fetch_data(username, password)
+    # Initialize update_event and start the background thread
     update_event = threading.Event()
-    # Start background thread to update data
     threading.Thread(target=update_data, args=(update_event,), daemon=True).start()
+else:
+    update_event = threading.Event()
 
+# In the main Streamlit loop, check if new data is available
+if update_event.is_set():  # If new data is ready
+    st.session_state.data = st.session_state.new_data  # Safely update main data in main thread
+    update_event.clear()  # Reset the event for future updates
 
 # Apply custom styles
 st.markdown(
