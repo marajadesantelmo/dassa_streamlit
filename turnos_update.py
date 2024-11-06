@@ -8,6 +8,7 @@ import smtplib
 from email.message import EmailMessage
 import time
 from tokens import username, password
+from utils import rellenar_df_vacio
 if os.path.exists('//dc01/Usuarios/PowerBI/flastra/Documents/dassa_streamlit'):
     os.chdir('//dc01/Usuarios/PowerBI/flastra/Documents/dassa_streamlit')
 elif os.path.exists('C:/Users/facun/OneDrive/Documentos/GitHub/dassa_streamlit'):
@@ -202,4 +203,59 @@ turnos = pd.merge(turnos, ubicaciones, on='id', how='left')
 turnos = limpiar_columnas(turnos)
 
 
-turnos.to_csv('data/turnos.csv', index=False)
+
+## Parte que estaba en la app
+
+turnos['cliente'] = turnos['cliente'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
+turnos['desc_merc'] = turnos['desc_merc'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
+turnos['ubicacion'] = turnos['ubicacion'].str.strip()
+
+verificaciones_expo = turnos[(turnos['tipo_oper'] == 'Exportacion') & (turnos['destino'] == 'Verificacion')]
+verificaciones_expo = verificaciones_expo[['dia', 'cliente', 'desc_merc', 'contenedor', 'Envase', 'cantidad', 'ubicacion']]
+verificaciones_expo = rellenar_df_vacio(verificaciones_expo)
+verificaciones_expo.columns = ['Dia', 'Cliente', 'Desc. Merc.', 'Contenedor', 'Envase', 'Cantidad', 'Ubic.']
+
+verificaciones_impo = turnos[(turnos['tipo_oper'] == 'Importacion') & (turnos['destino'] == 'Verificacion')]
+verificaciones_impo = verificaciones_impo[['dia', 'cliente', 'desc_merc', 'contenedor', 'Envase', 'cantidad', 'ubicacion', 'Estado']]
+verificaciones_impo.columns = ['Dia', 'Cliente', 'Desc. Merc.', 'Contenedor', 'Envase', 'Cant.', 'Ubic.', 'Estado']
+
+retiros_impo = turnos[(turnos['tipo_oper'] == 'Importacion') & (turnos['destino'] == 'Retiro')]
+retiros_impo = retiros_impo[['dia', 'cliente', 'conocim1', 'contenedor', 'Envase', 'cantidad', 'ubicacion', 'Estado']]
+retiros_impo.columns = ['Dia', 'Cliente', 'Conocim.', 'Contenedor', 'Envase', 'Cant.', 'Ubic.', 'Estado']
+retiros_impo['Conocim.'] = retiros_impo['Conocim.'].str.strip()
+
+otros_impo = turnos[(turnos['tipo_oper'] == 'Importacion') & (~turnos['destino'].isin(['Retiro', 'Verificacion']))]
+otros_impo = otros_impo[['dia', 'hora', 'id', 'cliente', 'contenedor', 'Envase', 'cantidad', 'ubicacion', 'Estado']]
+otros_impo.columns = ['Dia', 'Hora', 'Operacion', 'Cliente', 'Contenedor', 'Envase', 'Cant.', 'Ubic.', 'Estado']
+
+
+retiros_expo = turnos[(turnos['tipo_oper'] == 'Exportacion') & (turnos['destino'] == 'Retiro')]
+retiros_expo = retiros_expo[['dia', 'cliente', 'conocim1', 'contenedor', 'Envase', 'cantidad', 'ubicacion', 'Estado']]
+retiros_expo.columns = ['Dia', 'Cliente', 'Conocim.', 'Contenedor', 'Envase', 'Cantidad', 'Ubic.', 'Estado']
+
+otros_expo = turnos[(turnos['tipo_oper'] == 'Exportacion') & (~turnos['destino'].isin(['Retiro', 'Verificacion']))]
+otros_expo = otros_expo[['dia', 'hora', 'id', 'cliente', 'contenedor', 'Envase', 'cantidad', 'ubicacion']]
+otros_expo.columns = ['Dia', 'Hora', 'Operacion', 'Cliente', 'Contenedor', 'Envase', 'Cantidad', 'Ubic.']
+
+remisiones = turnos[turnos['destino'] == 'Remision']
+consolidados = turnos[turnos['destino'] == 'Consolidado']
+
+verificaciones_expo = rellenar_df_vacio(verificaciones_expo)
+retiros_expo = rellenar_df_vacio(retiros_expo)
+retiros_impo = rellenar_df_vacio(retiros_impo)
+otros_expo = rellenar_df_vacio(otros_expo)
+remisiones = rellenar_df_vacio(remisiones)
+consolidados = rellenar_df_vacio(consolidados)
+
+verificaciones_impo = rellenar_df_vacio(verificaciones_impo)
+otros_impo = rellenar_df_vacio(otros_impo)
+
+
+verificaciones_expo.to_csv('data/verificaciones_expo.csv', index=False)
+verificaciones_impo.to_csv('data/verificaciones_impo.csv', index=False)
+retiros_expo.to_csv('data/retiros_expo.csv', index=False)
+retiros_impo.to_csv('data/retiros_impo.csv', index=False)
+otros_expo.to_csv('data/otros_expo.csv', index=False)
+otros_impo.to_csv('data/otros_impo.csv', index=False)
+remisiones.to_csv('data/remisiones.csv', index=False)
+consolidados.to_csv('data/consolidados.csv', index=False)

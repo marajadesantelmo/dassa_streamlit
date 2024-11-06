@@ -1,8 +1,5 @@
-contenedor,buque,terminal,fecha,turno,peso,operacion,arribado,dimension,tipo_cnt,vto_vacio,Entrega,Estado,cliente,cantidad,kilos,Envase
-TRHU-651223-5,MSC CHANNE                    ,Exolgan,2024-10-17,1500 ,24220.00,TD,1,70,HC,2024-11-02,Medlog Sarandi                ,Pte. Desc.,Aceptyourdestiny Sa                                                             ,1088,24220.00,Rollos                                  
-HLBU-153857-2,CISNES                        ,Exolgan,2024-10-31,1700 ,1167.00,TD,1,60,DR,2024-11-19,,Pte. Desc.,Lift Van Int. Co S.A                                                            ,,,
-TCLU-385969-9,XIN WEI HAI                   ,TRP,2024-10-31,1000 ,3100.00,TD,1,30,DR,2024-11-19,,Pte. Desc.,Edelweiss Spedition Srl                                                         ,,,
-MRSU-556404-1,MAERSK LAVRAS                 ,Terminal 4,2024-10-29,0800 ,14299.20,TD,1,70,HC,2024-11-15,,Vacio,Maransi S.A.                                                                    ,216,14299.20,Bultos                                  
-TRHU-411740-0,MAERSK LAVRAS                 ,Terminal 4,2024-10-29,0800 ,13740.00,TD,1,70,HC,2024-11-15,,Vacio,Maransi S.A.                                                                    ,262,13740.00,Bultos                                  
-ZIMU-295917-0,MAERSK LAVRAS                 ,Terminal 4,2024-10-28,1600 ,16452.00,TD,1,30,DR,2024-11-15,,Vacio,Industrias Saladillo S.A.                                                       ,20,16452.00,Pallets                                 
-TCLU-418014-6,CMA CGM AMAZONIA              ,TRP,2024-10-28,1600 ,4500.00,TD,1,60,DR,2024-11-15,,Vacio,Mercovan Argentina Srl                                                          ,219,4500.00,Bultos                                  
+Contenedor,Cliente,Entrega,Vto. Vacio,Tipo,Peso,Estado
+SEKU-149444-7,Lift Van I...,Exolgan                       ,2024-11-16,DR,2465.00,Pte. Desc.
+TRHU-651223-5,Aceptyourd...,Medlog Sarandi                ,2024-11-02,HC,24220.00,Vacio
+CXRU-141720-5,Automat In...,Medlog Sarandi                ,2024-11-18,RF,5655.50,Pte. Desc.
+SZLU-947603-2,De La Fuen...,Medlog Sarandi                ,2024-11-21,RF,13246.79,Pte. Desc.

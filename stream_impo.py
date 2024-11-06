@@ -1,59 +1,20 @@
 import streamlit as st
 import pandas as pd
-#import gspread
-#from streamlit_gsheets import GSheetsConnection
 import time
 from datetime import datetime
-from utils import highlight, rellenar_df_vacio
-def fetch_data():
-    # Opcion para tomarlo de googlsheets
-    #arribos = conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1r66h7BCAu-CyG5uRsITYhuds9uGlw7k_-Xu24WNX43Q/edit?gid=0#gid=0', usecols=list(range(18)), ttl=1)
-    #pendiente_desconsolidar = conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1r66h7BCAu-CyG5uRsITYhuds9uGlw7k_-Xu24WNX43Q/edit?gid=594764855#gid=594764855', usecols=list(range(17)), ttl=1)
-    #turnos = conn.read(spreadsheet='https://docs.google.com/spreadsheets/d/1aWYam7vlducK5vNiQO5lyNfWJR6dEe-WA2805URN6p0/edit?gid=1749130661#gid=1749130661', usecols=list(range(29)), ttl=1)
+from utils import highlight
+
+def fetch_data_impo():
     arribos = pd.read_csv('data/arribos.csv')
     pendiente_desconsolidar = pd.read_csv('data/pendiente_desconsolidar.csv')
-    turnos = pd.read_csv('data/turnos.csv')
-
-    arribos = arribos[['terminal', 'turno', 'contenedor', 'cliente', 'bookings', 'tipo_cnt', 'tiempo_transcurrido', 'Estado']]
-    arribos.columns = ['Terminal', 'Turno', 'Contenedor', 'Cliente', 'Bookings', 'Tipo', 'Temp.', 'Estado']
-    arribos['Cliente'] = arribos['Cliente'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
-    arribos['Bookings'] = arribos['Bookings'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
-    arribos['Turno'] = arribos['Turno'].apply(lambda x: f"{str(x)[:-2]}:{str(x)[-2:]}")
-
-    pendiente_desconsolidar = pendiente_desconsolidar[['contenedor', 'cliente', 'Entrega', 'vto_vacio', 'tipo_cnt', 'peso','Estado']]
-    pendiente_desconsolidar.columns = ['Contenedor', 'Cliente', 'Entrega', 'Vto. Vacio', 'Tipo', 'Peso', 'Estado']
-    pendiente_desconsolidar['Entrega'] = pendiente_desconsolidar['Entrega'].fillna('-')
-    pendiente_desconsolidar['Cliente'] = pendiente_desconsolidar['Cliente'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
-
-    turnos['cliente'] = turnos['cliente'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
-    turnos['desc_merc'] = turnos['desc_merc'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
-    turnos['ubicacion'] = turnos['ubicacion'].str.strip()
-
-    verificaciones_impo = turnos[(turnos['tipo_oper'] == 'Importacion') & (turnos['destino'] == 'Verificacion')]
-    verificaciones_impo = verificaciones_impo[['dia', 'cliente', 'desc_merc', 'contenedor', 'Envase', 'cantidad', 'ubicacion', 'Estado']]
-    verificaciones_impo.columns = ['Dia', 'Cliente', 'Desc. Merc.', 'Contenedor', 'Envase', 'Cant.', 'Ubic.', 'Estado']
-
-    retiros = turnos[(turnos['tipo_oper'] == 'Importacion') & (turnos['destino'] == 'Retiro')]
-    retiros = retiros[['dia', 'cliente', 'conocim1', 'contenedor', 'Envase', 'cantidad', 'ubicacion', 'Estado']]
-    retiros.columns = ['Dia', 'Cliente', 'Conocim.', 'Contenedor', 'Envase', 'Cant.', 'Ubic.', 'Estado']
-    retiros['Conocim.'] = retiros['Conocim.'].str.strip()
-
-    otros_impo = turnos[(turnos['tipo_oper'] == 'Importacion') & (~turnos['destino'].isin(['Retiro', 'Verificacion']))]
-    otros_impo = otros_impo[['dia', 'hora', 'id', 'cliente', 'contenedor', 'Envase', 'cantidad', 'ubicacion', 'Estado']]
-    otros_impo.columns = ['Dia', 'Hora', 'Operacion', 'Cliente', 'Contenedor', 'Envase', 'Cant.', 'Ubic.', 'Estado']
-
-    #Se rellenan los dataframes vacios
-    arribos = rellenar_df_vacio(arribos)
-    pendiente_desconsolidar = rellenar_df_vacio(pendiente_desconsolidar)
-    verificaciones_impo = rellenar_df_vacio(verificaciones_impo)
-    retiros = rellenar_df_vacio(retiros)
-    otros_impo = rellenar_df_vacio(otros_impo)
-
-    return arribos, pendiente_desconsolidar, verificaciones_impo, retiros, otros_impo
+    verificaciones_impo = pd.read_csv('data/verificaciones_impo.csv')
+    retiros_impo = pd.read_csv('data/retiros_impo.csv')
+    otros_impo = pd.read_csv('data/otros_impo.csv')
+    return arribos, pendiente_desconsolidar, verificaciones_impo, retiros_impo, otros_impo
 
 def show_page():
     # Load data
-    arribos, pendiente_desconsolidar, verificaciones_impo, retiros, otros_impo = fetch_data()
+    arribos, pendiente_desconsolidar, verificaciones_impo, retiros_impo, otros_impo = fetch_data_impo()
 
     col_logo, col_title = st.columns([2, 5])
     with col_logo:
@@ -85,12 +46,8 @@ def show_page():
 
     with col4:
         st.header("Retiros")
-        st.dataframe(retiros.style.apply(highlight, axis=1), hide_index=True, use_container_width=True)
+        st.dataframe(retiros_impo.style.apply(highlight, axis=1), hide_index=True, use_container_width=True)
 
-    print('Esperando 5 para actualizar')
-    time.sleep(60*5)
-    print('Actualizando')
-    st.rerun()
 
 # Run the show_page function
 if __name__ == "__main__":

@@ -13,6 +13,7 @@ import smtplib
 from email.message import EmailMessage
 import time
 from tokens import username, password
+from utils import rellenar_df_vacio
 if os.path.exists('//dc01/Usuarios/PowerBI/flastra/Documents/dassa_streamlit'):
     os.chdir('//dc01/Usuarios/PowerBI/flastra/Documents/dassa_streamlit')
 elif os.path.exists('C:/Users/facun/OneDrive/Documentos/GitHub/dassa_streamlit'):
@@ -342,10 +343,34 @@ arribos_historico_horarios = pd.concat([arribos_historico_horarios, arribos_reci
 arribos_historico_horarios.to_csv('arribos_historico_horarios.csv', index=False)
 
 
+## Parte que estaba en la app
+
+arribos_expo_carga = arribos_expo[arribos_expo['tipo_oper'] != 'VACIO']
+arribos_expo_ctns = arribos_expo[arribos_expo['tipo_oper'] == 'VACIO']
+arribos_expo_carga = arribos_expo_carga[['fecha', 'bookings', 'cliente', 'desc_merc', 'Estado']]
+arribos_expo_carga.columns = ['Fecha', 'Bookings', 'Cliente', 'Desc. Merc.', 'Estado']
+arribos_expo_ctns = arribos_expo_ctns[['fecha', 'bookings', 'cliente', 'dimension', 'contenedor', 'precinto','Estado']]
+arribos_expo_ctns.columns = ['Fecha', 'Bookings', 'Cliente', 'Dimension', 'Contenedor', 'Precinto', 'Estado']   
+
+arribos = arribos[['terminal', 'turno', 'contenedor', 'cliente', 'bookings', 'tipo_cnt', 'tiempo_transcurrido', 'Estado']]
+arribos.columns = ['Terminal', 'Turno', 'Contenedor', 'Cliente', 'Bookings', 'Tipo', 'Temp.', 'Estado']
+arribos['Cliente'] = arribos['Cliente'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
+arribos['Bookings'] = arribos['Bookings'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
+arribos['Turno'] = arribos['Turno'].apply(lambda x: f"{str(x)[:-2]}:{str(x)[-2:]}")
+
+pendiente_desconsolidar = pendiente_desconsolidar[['contenedor', 'cliente', 'Entrega', 'vto_vacio', 'tipo_cnt', 'peso','Estado']]
+pendiente_desconsolidar.columns = ['Contenedor', 'Cliente', 'Entrega', 'Vto. Vacio', 'Tipo', 'Peso', 'Estado']
+pendiente_desconsolidar['Entrega'] = pendiente_desconsolidar['Entrega'].fillna('-')
+pendiente_desconsolidar['Cliente'] = pendiente_desconsolidar['Cliente'].apply(lambda x: x[:10] + "..." if len(x) > 10 else x)
+
+arribos = rellenar_df_vacio(arribos)
+pendiente_desconsolidar = rellenar_df_vacio(pendiente_desconsolidar)
+
 #%% Update Google Sheets
 
 arribos.to_csv('data/arribos.csv', index=False)
-arribos_expo.to_csv('data/arribos_expo.csv', index=False)
+arribos_expo_carga.to_csv('data/arribos_expo_carga.csv', index=False)
+arribos_expo_ctns.to_csv('data/arribos_expo_ctns.csv', index=False)
 pendiente_ingresado.to_csv('data/pendiente_ingresado.csv', index=False)
 pendiente_desconsolidar.to_csv('data/pendiente_desconsolidar.csv', index=False)
 pendiente_consolidar.to_csv('data/pendiente_consolidar.csv', index=False)
